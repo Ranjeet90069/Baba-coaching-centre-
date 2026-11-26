@@ -2643,7 +2643,10 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             const mimeCandidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
             const chosenMime = mimeCandidates.find(m => window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) || '';
-            parentMediaRecorder = chosenMime ? new MediaRecorder(stream, { mimeType: chosenMime }) : new MediaRecorder(stream);
+            const options = chosenMime
+                ? { mimeType: chosenMime, audioBitsPerSecond: 24000 }
+                : { audioBitsPerSecond: 24000 };
+            parentMediaRecorder = new MediaRecorder(stream, options);
             parentVoiceMimeType = parentMediaRecorder.mimeType || chosenMime || 'audio/webm';
             parentAudioChunks = [];
             parentVoiceSeconds = 0;
