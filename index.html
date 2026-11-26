@@ -908,11 +908,44 @@
                 </div>
             </div>
             <div>
-                <label class="lbl">Remarks / Month</label>
-                <input type="text" id="inFeeRemark" class="input-3d" placeholder="e.g. November Monthly Tuition Fee">
+                <label class="lbl">Total Course / Monthly Fee (₹)</label>
+                <input type="number" id="inFeeTotalEdit" class="input-3d" min="0" placeholder="e.g. 1500">
+            </div>
+            <div>
+                <label class="lbl">Select Fee Month &amp; Remarks</label>
+                <input type="month" id="inFeeMonthPick" onchange="onFeeMonthPickChange()" class="input-3d" style="margin-bottom:6px;">
+                <input type="text" id="inFeeRemark" class="input-3d" placeholder="e.g. November 2026 Monthly Tuition Fee">
             </div>
             <button type="submit" class="btn-3d btn-green" style="width: 100%; padding: 12px; font-size: 14px;">
                 ✅ Save Fee &amp; View Official Receipt
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- 4B. Add Next Month Fee Modal -->
+<div id="addMonthFeeModal" class="modal-overlay hidden">
+    <div class="modal-sheet">
+        <div class="sheet-bar"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="font-size: 16px; font-weight: 900;">📅 Add Fee Month (Naye Mahine Ki Fee Jodein)</h3>
+            <button type="button" onclick="closeModal('addMonthFeeModal')" class="btn-3d btn-light" style="padding: 5px 10px;">✕</button>
+        </div>
+        <form onsubmit="submitAddMonthFee(event)" style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="hidden" id="addMonthStuId">
+            <div id="addMonthStuBanner" style="background: #eff6ff; color: #0e336b; padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 800;"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                    <label class="lbl">Select Fee Month *</label>
+                    <input type="month" id="inAddFeeMonth" class="input-3d" required>
+                </div>
+                <div>
+                    <label class="lbl">Monthly Fee Amount (₹) *</label>
+                    <input type="number" id="inAddFeeMonthAmt" class="input-3d" required min="1">
+                </div>
+            </div>
+            <button type="submit" class="btn-3d btn-green" style="width: 100%; padding: 12px; font-size: 14px;">
+                ➕ Add Month Fee
             </button>
         </form>
     </div>
@@ -1492,7 +1525,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 </div>
 
 
-<!-- 13. Parent Apply Leave Modal (अभिभावक छुट्टी आवेदन) -->
+<!-- 13. Parent Apply Leave Modal (अभिभावक छुट्टी आवेदन + आवाज़ संदेश) -->
 <div id="parentLeaveModal" class="modal-overlay hidden">
     <div class="modal-sheet">
         <div class="sheet-bar"></div>
@@ -1514,8 +1547,36 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 </div>
             </div>
             <div>
-                <label class="lbl">छुट्टी का कारण / संदेश *</label>
-                <textarea id="inParentLeaveMsg" rows="3" class="input-3d" required placeholder="उदाहरण: बुखार होने के कारण मेरा बच्चा आज कोचिंग नहीं आ पाएगा।"></textarea>
+                <label class="lbl">छुट्टी का कारण / संदेश (लिखें या नीचे बोलकर रिकॉर्ड करें)</label>
+                <div style="display:flex;gap:7px;align-items:stretch;">
+                    <textarea id="inParentLeaveMsg" rows="3" class="input-3d" style="flex:1;min-width:0;" placeholder="उदाहरण: बुखार होने के कारण मेरा बच्चा आज कोचिंग नहीं आ पाएगा।"></textarea>
+                    <button type="button" id="btnInlineLeaveMic" onclick="toggleParentVoiceFromMic()" class="btn-3d btn-green" title="आवाज़ रिकॉर्ड करें" aria-label="आवाज़ रिकॉर्ड करें" style="width:54px;min-width:54px;padding:8px;font-size:23px;display:flex;align-items:center;justify-content:center;">🎙️</button>
+                </div>
+                <div style="font-size:10px;color:#64748b;margin-top:4px;">माइक दबाकर बोलें, फिर दोबारा दबाकर रिकॉर्डिंग रोकें। चाहें तो लिखकर भी भेज सकते हैं।</div>
+            </div>
+
+            <!-- Voice Message Recorder Box -->
+            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-size: 11px; font-weight: 900; color: #166534;">🎙️ आवाज़ में संदेश</span>
+                    <span id="voiceRecTimer" style="font-size: 11px; font-weight: 800; color: #dc2626;"></span>
+                </div>
+                <div id="voiceRecControls" style="display: flex; gap: 8px; align-items: center;">
+                    <button type="button" id="btnStartVoiceRec" onclick="startParentVoiceRecording()" class="btn-3d btn-green" style="flex: 1; padding: 9px 10px; font-size: 12px;">
+                        🎙️ आवाज़ रिकॉर्ड करें
+                    </button>
+                    <button type="button" id="btnStopVoiceRec" onclick="stopParentVoiceRecording()" class="btn-3d btn-red hidden" style="flex: 1; padding: 9px 10px; font-size: 12px;">
+                        ⏹️ रिकॉर्डिंग रोकें
+                    </button>
+                </div>
+                <input type="file" id="parentVoiceFileInput" accept="audio/*" capture="user" style="display:none" onchange="handleParentVoiceFile(this)">
+                <button type="button" id="btnChooseVoiceFile" onclick="openParentVoiceFilePicker()" class="btn-3d btn-light" style="width:100%;padding:8px 10px;font-size:11px;margin-top:6px;">📁 फ़ोन से आवाज़ रिकॉर्ड करें / ऑडियो चुनें</button>
+                <div id="voicePreviewBox" class="hidden" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+                    <audio id="parentVoicePreviewAudio" controls style="width: 100%; height: 36px;"></audio>
+                    <button type="button" onclick="clearParentVoiceRecording()" class="btn-3d btn-light" style="padding: 6px 10px; font-size: 11px; color: #dc2626;">
+                        🗑️ रिकॉर्डिंग हटाएं (दोबारा रिकॉर्ड करें)
+                    </button>
+                </div>
             </div>
 
             <button type="submit" id="btnSubmitParentLeave" class="btn-3d btn-navy" style="width: 100%; padding: 12px; font-size: 14px;">
@@ -2712,14 +2773,16 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     }
 
     function clearParentVoiceRecording() {
-        if (parentMediaRecorder && parentMediaRecorder.state !== 'inactive') {
-            try { parentMediaRecorder.stop(); } catch (err) {}
-        }
-        clearInterval(parentVoiceTimerInt);
+        stopParentVoiceRecording();
         parentVoiceDataUrl = '';
         parentAudioChunks = [];
         parentVoiceSeconds = 0;
-        parentMediaRecorder = null;
+        const audioEl = document.getElementById('parentVoicePreviewAudio');
+        if (audioEl) { audioEl.pause(); audioEl.src = ''; }
+        document.getElementById('voicePreviewBox').classList.add('hidden');
+        document.getElementById('voiceRecTimer').textContent = '';
+        const fileInput = document.getElementById('parentVoiceFileInput');
+        if (fileInput) fileInput.value = '';
     }
 
     function closeParentLeaveModal() {
@@ -2769,6 +2832,10 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
     async function submitParentLeave(e) {
         e.preventDefault();
+        if (parentMediaRecorder && parentMediaRecorder.state !== 'inactive') {
+            showToast('पहले आवाज़ रिकॉर्डिंग रोकें।');
+            return;
+        }
         const stuId = document.getElementById('inParentLeaveStuId').value;
         const stu = getLoggedInParentKids().find(k => k.id === stuId);
         if (!stu) return;
@@ -2777,12 +2844,9 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const toDate = document.getElementById('inParentLeaveTo').value || fromDate;
         const reason = document.getElementById('inParentLeaveMsg').value.trim();
 
-        if (!fromDate || !toDate || !reason) {
-            showToast('कृपया छुट्टी की तारीख और कारण भरें।');
-            return;
-        }
-        if (toDate < fromDate) {
-            showToast('छुट्टी की अंतिम तारीख, शुरू होने की तारीख से पहले नहीं हो सकती।');
+        if (!fromDate) return;
+        if (!reason && !parentVoiceDataUrl) {
+            showToast('कृपया छुट्टी का कारण लिखें या आवाज़ संदेश रिकॉर्ड करें!');
             return;
         }
 
@@ -2791,6 +2855,17 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ आवेदन भेजा जा रहा है…'; }
 
         try {
+            let finalVoiceUrl = '';
+            if (parentVoiceDataUrl) {
+                const ext = parentVoiceMimeType.includes('mp4') ? 'm4a' : (parentVoiceMimeType.includes('ogg') ? 'ogg' : 'webm');
+                finalVoiceUrl = await uploadMediaToGoogleDrive(
+                    parentVoiceDataUrl,
+                    `leave_voice_${stu.roll}_${Date.now()}.${ext}`,
+                    parentVoiceMimeType,
+                    true
+                );
+            }
+
             if (!Array.isArray(db.leaves)) db.leaves = [];
             db.leaves.unshift({
                 id: 'lv_' + Date.now(),
@@ -2803,17 +2878,18 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 className: cls ? cls.name : '',
                 fromDate,
                 toDate,
-                reason,
-                voiceUrl: '',
+                reason: reason || '🎙️ आवाज़ संदेश भेजा गया है',
+                voiceUrl: finalVoiceUrl,
                 status: 'Pending',
                 createdAt: new Date().toISOString(),
                 actionBy: ''
             });
 
             saveDB();
+            clearParentVoiceRecording();
             closeModal('parentLeaveModal');
             renderParentPortal();
-            showToast('छुट्टी का आवेदन भेज दिया गया है!');
+            showToast('छुट्टी का आवेदन और आवाज़ संदेश भेज दिया गया है!');
         } finally {
             if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origTxt; }
         }
@@ -3666,10 +3742,11 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                         ${isCurrentUserPrincipalOrAdmin() && (stu.feePaid || 0) > 0 ? `<button type="button" onclick="resetStudentFeeRecord('${stu.id}')" class="btn-3d btn-red" style="padding:4px 7px;font-size:10px;" title="Reset/Delete Paid Fee">🗑️</button>` : ''}
                     </div>
                 </div>
-                <div style="display:grid;grid-template-columns: ${due > 0 ? '1fr 1fr 1fr' : '1fr 1.2fr'};gap:6px;">
-                    <button type="button" onclick="openCollectFeeModal('${stu.id}')" class="btn-3d btn-navy" style="padding:8px 4px;font-size:11px;">+ Collect</button>
-                    <button type="button" onclick="openFeeReceipt('${stu.id}')" class="btn-3d btn-wa" style="padding:8px 4px;font-size:11px;">🧾 Receipt</button>
-                    ${due > 0 ? `<button type="button" onclick="sendFeeDueWhatsApp('${stu.id}')" class="btn-3d btn-gold" style="padding:8px 4px;font-size:11px;">📲 Due Alert</button>` : ''}
+                <div style="display:grid;grid-template-columns: ${due > 0 ? '1fr 1fr 1fr 1fr' : '1fr 1fr 1.1fr'};gap:5px;">
+                    <button type="button" onclick="openAddMonthFeeModal('${stu.id}')" class="btn-3d btn-green" style="padding:8px 3px;font-size:10px;">+ Add Month</button>
+                    <button type="button" onclick="openCollectFeeModal('${stu.id}')" class="btn-3d btn-navy" style="padding:8px 3px;font-size:10px;">+ Collect</button>
+                    <button type="button" onclick="openFeeReceipt('${stu.id}')" class="btn-3d btn-wa" style="padding:8px 3px;font-size:10px;">🧾 Receipt</button>
+                    ${due > 0 ? `<button type="button" onclick="sendFeeDueWhatsApp('${stu.id}')" class="btn-3d btn-gold" style="padding:8px 3px;font-size:10px;">📲 Alert</button>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -3721,26 +3798,40 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         openModal('feeDueQueueModal');
     }
 
+    function onFeeMonthPickChange() {
+        const ym = (document.getElementById('inFeeMonthPick').value || '').trim();
+        if (!ym) return;
+        const [y, m] = ym.split('-');
+        const mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('inFeeRemark').value = `${mNames[Number(m) - 1] || m} ${y} Monthly Tuition Fee`;
+    }
+
     function openCollectFeeModal(stuId) {
         const stu = db.students.find(s => s.id === stuId);
         if (!stu) return;
         const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
         document.getElementById('feeStuId').value = stu.id;
         document.getElementById('feeStuBanner').textContent = `${stu.name} (#${stu.roll}) • Balance Due: ₹${due}`;
-        document.getElementById('inFeePaidAmt').value = due > 0 ? due : 500;
-        document.getElementById('inFeeRemark').value = 'Monthly Tuition Fee';
+        document.getElementById('inFeeTotalEdit').value = stu.feeTotal || 0;
+        document.getElementById('inFeePaidAmt').value = due > 0 ? due : (stu.feeTotal || 500);
+        document.getElementById('inFeeMonthPick').value = getTodayISO().slice(0, 7);
+        onFeeMonthPickChange();
         openModal('collectFeeModal');
     }
 
     function submitFeeCollection(e) {
         e.preventDefault();
         const stuId = document.getElementById('feeStuId').value;
+        const newTotalRaw = document.getElementById('inFeeTotalEdit').value;
         const amt = Number(document.getElementById('inFeePaidAmt').value) || 0;
         const mode = document.getElementById('inFeePayMode').value;
         const remark = document.getElementById('inFeeRemark').value.trim() || 'Tuition Fee';
 
         const stu = db.students.find(s => s.id === stuId);
         if (stu && amt > 0) {
+            if (newTotalRaw !== '' && !isNaN(Number(newTotalRaw))) {
+                stu.feeTotal = Math.max(0, Number(newTotalRaw));
+            }
             const receiptNo = 'BCC-' + Math.floor(1000 + Math.random() * 9000);
             const payDate = getTodayISO();
             stu.feePaid = (stu.feePaid || 0) + amt;
@@ -3762,6 +3853,37 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             showToast(`₹${amt} fee recorded & synced!`);
             openFeeReceipt(stu.id);
         }
+    }
+
+    function openAddMonthFeeModal(stuId) {
+        const stu = db.students.find(s => s.id === stuId);
+        if (!stu) return;
+        const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+        document.getElementById('addMonthStuId').value = stu.id;
+        document.getElementById('addMonthStuBanner').textContent = `${stu.name} (#${stu.roll}) • Total Fee: ₹${stu.feeTotal || 0} | Due: ₹${due}`;
+        document.getElementById('inAddFeeMonth').value = getTodayISO().slice(0, 7);
+        document.getElementById('inAddFeeMonthAmt').value = stu.feeTotal > 0 ? stu.feeTotal : 1500;
+        openModal('addMonthFeeModal');
+    }
+
+    function submitAddMonthFee(e) {
+        e.preventDefault();
+        const stuId = document.getElementById('addMonthStuId').value;
+        const ym = (document.getElementById('inAddFeeMonth').value || '').trim();
+        const addAmt = Number(document.getElementById('inAddFeeMonthAmt').value) || 0;
+        const stu = db.students.find(s => s.id === stuId);
+        if (!stu || addAmt <= 0 || !ym) return;
+
+        const [y, m] = ym.split('-');
+        const mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const monthLabel = `${mNames[Number(m) - 1] || m} ${y}`;
+
+        stu.feeTotal = (Number(stu.feeTotal) || 0) + addAmt;
+        stu.lastPayRemark = `${monthLabel} Monthly Fee Added`;
+        saveDB();
+        renderFeeCards();
+        closeModal('addMonthFeeModal');
+        showToast(`${monthLabel} ki ₹${addAmt} fee add ho gayi!`);
     }
 
     function openFeeReceipt(stuId) {
