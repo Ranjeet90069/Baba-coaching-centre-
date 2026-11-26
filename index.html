@@ -1492,7 +1492,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 </div>
 
 
-<!-- 13. Parent Apply Leave Modal (अभिभावक छुट्टी आवेदन + आवाज़ संदेश) -->
+<!-- 13. Parent Apply Leave Modal (अभिभावक छुट्टी आवेदन) -->
 <div id="parentLeaveModal" class="modal-overlay hidden">
     <div class="modal-sheet">
         <div class="sheet-bar"></div>
@@ -1514,36 +1514,8 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 </div>
             </div>
             <div>
-                <label class="lbl">छुट्टी का कारण / संदेश (लिखें या नीचे बोलकर रिकॉर्ड करें)</label>
-                <div style="display:flex;gap:7px;align-items:stretch;">
-                    <textarea id="inParentLeaveMsg" rows="3" class="input-3d" style="flex:1;min-width:0;" placeholder="उदाहरण: बुखार होने के कारण मेरा बच्चा आज कोचिंग नहीं आ पाएगा।"></textarea>
-                    <button type="button" id="btnInlineLeaveMic" onclick="toggleParentVoiceFromMic()" class="btn-3d btn-green" title="आवाज़ रिकॉर्ड करें" aria-label="आवाज़ रिकॉर्ड करें" style="width:54px;min-width:54px;padding:8px;font-size:23px;display:flex;align-items:center;justify-content:center;">🎙️</button>
-                </div>
-                <div style="font-size:10px;color:#64748b;margin-top:4px;">माइक दबाकर बोलें, फिर दोबारा दबाकर रिकॉर्डिंग रोकें। चाहें तो लिखकर भी भेज सकते हैं।</div>
-            </div>
-
-            <!-- Voice Message Recorder Box -->
-            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-size: 11px; font-weight: 900; color: #166534;">🎙️ आवाज़ में संदेश</span>
-                    <span id="voiceRecTimer" style="font-size: 11px; font-weight: 800; color: #dc2626;"></span>
-                </div>
-                <div id="voiceRecControls" style="display: flex; gap: 8px; align-items: center;">
-                    <button type="button" id="btnStartVoiceRec" onclick="startParentVoiceRecording()" class="btn-3d btn-green" style="flex: 1; padding: 9px 10px; font-size: 12px;">
-                        🎙️ आवाज़ रिकॉर्ड करें
-                    </button>
-                    <button type="button" id="btnStopVoiceRec" onclick="stopParentVoiceRecording()" class="btn-3d btn-red hidden" style="flex: 1; padding: 9px 10px; font-size: 12px;">
-                        ⏹️ रिकॉर्डिंग रोकें
-                    </button>
-                </div>
-                <input type="file" id="parentVoiceFileInput" accept="audio/*" capture="user" style="display:none" onchange="handleParentVoiceFile(this)">
-                <button type="button" id="btnChooseVoiceFile" onclick="openParentVoiceFilePicker()" class="btn-3d btn-light" style="width:100%;padding:8px 10px;font-size:11px;margin-top:6px;">📁 फ़ोन से आवाज़ रिकॉर्ड करें / ऑडियो चुनें</button>
-                <div id="voicePreviewBox" class="hidden" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
-                    <audio id="parentVoicePreviewAudio" controls style="width: 100%; height: 36px;"></audio>
-                    <button type="button" onclick="clearParentVoiceRecording()" class="btn-3d btn-light" style="padding: 6px 10px; font-size: 11px; color: #dc2626;">
-                        🗑️ रिकॉर्डिंग हटाएं (दोबारा रिकॉर्ड करें)
-                    </button>
-                </div>
+                <label class="lbl">छुट्टी का कारण / संदेश *</label>
+                <textarea id="inParentLeaveMsg" rows="3" class="input-3d" required placeholder="उदाहरण: बुखार होने के कारण मेरा बच्चा आज कोचिंग नहीं आ पाएगा।"></textarea>
             </div>
 
             <button type="submit" id="btnSubmitParentLeave" class="btn-3d btn-navy" style="width: 100%; padding: 12px; font-size: 14px;">
@@ -2740,16 +2712,14 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     }
 
     function clearParentVoiceRecording() {
-        stopParentVoiceRecording();
+        if (parentMediaRecorder && parentMediaRecorder.state !== 'inactive') {
+            try { parentMediaRecorder.stop(); } catch (err) {}
+        }
+        clearInterval(parentVoiceTimerInt);
         parentVoiceDataUrl = '';
         parentAudioChunks = [];
         parentVoiceSeconds = 0;
-        const audioEl = document.getElementById('parentVoicePreviewAudio');
-        if (audioEl) { audioEl.pause(); audioEl.src = ''; }
-        document.getElementById('voicePreviewBox').classList.add('hidden');
-        document.getElementById('voiceRecTimer').textContent = '';
-        const fileInput = document.getElementById('parentVoiceFileInput');
-        if (fileInput) fileInput.value = '';
+        parentMediaRecorder = null;
     }
 
     function closeParentLeaveModal() {
@@ -2799,10 +2769,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
     async function submitParentLeave(e) {
         e.preventDefault();
-        if (parentMediaRecorder && parentMediaRecorder.state !== 'inactive') {
-            showToast('पहले आवाज़ रिकॉर्डिंग रोकें।');
-            return;
-        }
         const stuId = document.getElementById('inParentLeaveStuId').value;
         const stu = getLoggedInParentKids().find(k => k.id === stuId);
         if (!stu) return;
@@ -2811,9 +2777,12 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const toDate = document.getElementById('inParentLeaveTo').value || fromDate;
         const reason = document.getElementById('inParentLeaveMsg').value.trim();
 
-        if (!fromDate) return;
-        if (!reason && !parentVoiceDataUrl) {
-            showToast('कृपया छुट्टी का कारण लिखें या आवाज़ संदेश रिकॉर्ड करें!');
+        if (!fromDate || !toDate || !reason) {
+            showToast('कृपया छुट्टी की तारीख और कारण भरें।');
+            return;
+        }
+        if (toDate < fromDate) {
+            showToast('छुट्टी की अंतिम तारीख, शुरू होने की तारीख से पहले नहीं हो सकती।');
             return;
         }
 
@@ -2822,17 +2791,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ आवेदन भेजा जा रहा है…'; }
 
         try {
-            let finalVoiceUrl = '';
-            if (parentVoiceDataUrl) {
-                const ext = parentVoiceMimeType.includes('mp4') ? 'm4a' : (parentVoiceMimeType.includes('ogg') ? 'ogg' : 'webm');
-                finalVoiceUrl = await uploadMediaToGoogleDrive(
-                    parentVoiceDataUrl,
-                    `leave_voice_${stu.roll}_${Date.now()}.${ext}`,
-                    parentVoiceMimeType,
-                    true
-                );
-            }
-
             if (!Array.isArray(db.leaves)) db.leaves = [];
             db.leaves.unshift({
                 id: 'lv_' + Date.now(),
@@ -2845,18 +2803,17 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 className: cls ? cls.name : '',
                 fromDate,
                 toDate,
-                reason: reason || '🎙️ आवाज़ संदेश भेजा गया है',
-                voiceUrl: finalVoiceUrl,
+                reason,
+                voiceUrl: '',
                 status: 'Pending',
                 createdAt: new Date().toISOString(),
                 actionBy: ''
             });
 
             saveDB();
-            clearParentVoiceRecording();
             closeModal('parentLeaveModal');
             renderParentPortal();
-            showToast('छुट्टी का आवेदन और आवाज़ संदेश भेज दिया गया है!');
+            showToast('छुट्टी का आवेदन भेज दिया गया है!');
         } finally {
             if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origTxt; }
         }
