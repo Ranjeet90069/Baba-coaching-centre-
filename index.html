@@ -466,15 +466,15 @@
                     </div>
                 </div>
                 <div id="parentSetupBar" class="hidden" style="display: flex; justify-content: space-between; align-items: center; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 10px; border-radius: 10px;">
-                    <span style="font-size: 11px; color: #166534; font-weight: 700;">Naya password banana hai?</span>
+                    <span style="font-size: 11px; color: #166534; font-weight: 700;">नया पासवर्ड बनाएं।</span>
                     <button type="button" onclick="openParentSetPasswordModal()" class="btn-3d btn-green" style="padding: 5px 9px; font-size: 10px;">
                         🔑 Create / Reset Password
                     </button>
                 </div>
                 <div id="roleCredHint" class="hidden"></div>
                 <div id="loginErrBox" class="hidden" style="background: #fee2e2; color: #991b1b; padding: 8px 10px; border-radius: 10px; font-size: 12px; font-weight: 700;"></div>
-                <button type="submit" class="btn-3d btn-navy" style="width: 100%; padding: 12px; font-size: 14px; margin-top: 2px;">
-                    🚀 Open BABA COACHING App
+                <button type="submit" id="loginSubmitBtn" class="btn-3d btn-navy" style="width: 100%; padding: 12px; font-size: 14px; margin-top: 2px;">
+                    🔐 Login
                 </button>
             </form>
         </div>
@@ -749,6 +749,13 @@
                             </label>
                         </div>
                     </div>
+                </div>
+
+                <!-- Logout Card in Settings -->
+                <div class="card-3d" style="border: 1.5px solid #fecaca; background: #fef2f2;">
+                    <button type="button" onclick="logoutCurrentUser()" class="btn-3d btn-red" style="width: 100%; padding: 12px; font-size: 14px;">
+                        🚪 Log Out
+                    </button>
                 </div>
 
             </section>
