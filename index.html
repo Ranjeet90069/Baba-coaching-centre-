@@ -456,12 +456,12 @@
             <form onsubmit="handleRoleSignIn(event)" style="display: flex; flex-direction: column; gap: 10px;">
                 <div>
                     <label id="loginUserLbl" class="lbl">Principal Mobile / Email</label>
-                    <input type="text" id="loginUserIn" class="input-3d" value="Satyanand916251@gmail.com" placeholder="Mobile number ya Email" autocomplete="username" required>
+                    <input type="text" id="loginUserIn" class="input-3d" value="Satyanand916251@gmail.com" placeholder="मोबाइल नंबर या ईमेल" autocomplete="username" required>
                 </div>
                 <div>
                     <label id="loginPassLbl" class="lbl">Password / PIN</label>
                     <div style="position: relative;">
-                        <input type="password" id="loginPinIn" class="input-3d" value="" placeholder="Password enter karein" autocomplete="current-password" required style="padding-right: 44px;">
+                        <input type="password" id="loginPinIn" class="input-3d" value="" placeholder="पासवर्ड दर्ज करें" autocomplete="current-password" required style="padding-right: 44px;">
                         <button type="button" onclick="toggleLoginPassVis()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 15px; cursor: pointer;" title="Show/Hide Password">👁️</button>
                     </div>
                 </div>
@@ -511,16 +511,14 @@
                     <div class="brand-title-mount" style="font-size: 14px; font-weight: 900; letter-spacing: 0.2px;">BABA COACHING CENTRE</div>
                     <div style="display:flex;align-items:center;gap:6px;">
                         <span id="roleBadgeText" style="font-size: 10px; color: #fcd34d; font-weight: 800;">🎓 PRINCIPAL PORTAL</span>
-                        <span id="liveSyncPill" style="font-size: 9px; background: rgba(16,185,129,0.22); color: #6ee7b7; padding: 1px 6px; border-radius: 999px; font-weight: 800;">● Live</span>
                     </div>
                 </div>
             </div>
             <div style="display: flex; gap: 6px; align-items: center;">
+                <button type="button" onclick="openModal('logoModal')" class="btn-3d btn-gold principal-only" style="padding: 7px 9px; font-size: 11px;">Logo</button>
                 <button type="button" onclick="openLeaveCenterModal()" class="btn-3d btn-light" style="padding: 7px 9px; font-size: 11px; position: relative;" title="छुट्टी आवेदन एवं सूचनाएँ (Leaves)">
                     🔔 Leave <span id="topLeaveBadge" class="hidden" style="background:#dc2626;color:#fff;font-size:9px;font-weight:900;padding:1px 5px;border-radius:999px;margin-left:2px;">0</span>
                 </button>
-                <button type="button" onclick="openModal('logoModal')" class="btn-3d btn-gold principal-only" style="padding: 7px 9px; font-size: 11px;">Logo</button>
-                <button type="button" onclick="logoutCurrentUser()" class="btn-3d btn-red" style="padding: 7px 9px; font-size: 11px;">Exit</button>
             </div>
         </header>
 
@@ -574,7 +572,7 @@
                         </button>
                     </div>
                     <button type="button" onclick="clearClassAttendanceForDate()" class="btn-3d btn-red principal-only" style="width:100%; padding: 7px 8px; font-size: 11px;">
-                        🗑️ Clear Today's Attendance (Is Date Ki Attendance Hatayein)
+                        🗑️ Clear Today's Attendance (इस तारीख़ की उपस्थिति हटाएं)
                     </button>
                 </div>
 
@@ -644,7 +642,7 @@
                         <button type="button" onclick="openManageClassesModal()" class="btn-3d btn-gold" style="padding: 6px 10px; font-size: 11px;">+ Add / Delete</button>
                     </div>
                     <p style="font-size: 11px; color: #64748b; font-weight: 600;">
-                        Nayi class/batch banayein ya purani class ko delete karein.
+                        नई कक्षा/बैच बनाएं या पुरानी कक्षा को हटाएं।
                     </p>
                 </div>
 
@@ -652,7 +650,7 @@
                 <div class="card-3d principal-only">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <div style="font-size: 14px; font-weight: 900; color: #0e336b;">🎓 Principal Profile &amp; Photo</div>
-                        <span class="badge badge-amber">Parents ko dikhega</span>
+                        <span class="badge badge-amber">अभिभावकों को दिखेगा</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
                         <div id="settingsPrincipalPhotoPreview" style="flex-shrink: 0;"></div>
@@ -724,7 +722,7 @@
                         </div>
                         <hr style="border:none;border-top:1px dashed #cbd5e1;margin:2px 0;">
                         <div class="principal-only">
-                            <label class="lbl">Online Fee Payment Mobile Number (Parents ko dikhega)</label>
+                            <label class="lbl">ऑनलाइन फीस भुगतान मोबाइल नंबर (अभिभावकों को दिखेगा)</label>
                             <div style="display: flex; gap: 6px;">
                                 <input type="tel" id="inPrincipalPayPhone" class="input-3d" placeholder="e.g. 9162510000" maxlength="15" style="font-size: 12px;">
                                 <button type="button" onclick="updatePrincipalPayPhone()" class="btn-3d btn-green" style="padding: 8px 12px; font-size: 11px; white-space: nowrap;">Save No.</button>
@@ -734,7 +732,7 @@
                         <div class="principal-only">
                             <label class="lbl">Principal Login Password</label>
                             <div style="display: flex; gap: 6px;">
-                                <input type="text" id="inPrincipalPassChange" class="input-3d" placeholder="Naya Principal Password" style="font-size: 12px;">
+                                <input type="text" id="inPrincipalPassChange" class="input-3d" placeholder="नया प्रधानाचार्य पासवर्ड" style="font-size: 12px;">
                                 <button type="button" onclick="updatePrincipalPassword()" class="btn-3d btn-gold" style="padding: 8px 12px; font-size: 11px; white-space: nowrap;">Update</button>
                             </div>
                         </div>
@@ -843,7 +841,7 @@
             </div>
             <div>
                 <label class="lbl">Parent Portal Login Password (Optional)</label>
-                <input type="text" id="inStuParentPass" class="input-3d" placeholder="Parent apna password khud bhi bana sakte hain">
+                <input type="text" id="inStuParentPass" class="input-3d" placeholder="अभिभावक अपना पासवर्ड स्वयं भी बना सकते हैं">
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <div>
@@ -935,7 +933,7 @@
     <div class="modal-sheet">
         <div class="sheet-bar"></div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h3 style="font-size: 16px; font-weight: 900;">📅 Add Fee Month (Naye Mahine Ki Fee Jodein)</h3>
+            <h3 style="font-size: 16px; font-weight: 900;">📅 फीस महीना जोड़ें (नए महीने की फीस जोड़ें)</h3>
             <button type="button" onclick="closeModal('addMonthFeeModal')" class="btn-3d btn-light" style="padding: 5px 10px;">✕</button>
         </div>
         <form onsubmit="submitAddMonthFee(event)" style="display: flex; flex-direction: column; gap: 10px;">
@@ -1128,7 +1126,7 @@
         <form onsubmit="saveNewTeacher(event)" style="display: flex; flex-direction: column; gap: 10px;">
             <input type="hidden" id="editTchId">
             <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px 10px;font-size:11px;color:#1e3a8a;font-weight:700;">
-                📱 Teacher sirf isi <strong>10-digit Mobile Number</strong> aur Password se login kar payenge.
+                📱 शिक्षक केवल इसी <strong>10-अंकों के मोबाइल नंबर</strong> और पासवर्ड से लॉगिन कर पाएंगे।
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                 <div>
@@ -1147,7 +1145,7 @@
                 </div>
                 <div>
                     <label class="lbl">Login Password / PIN *</label>
-                    <input type="text" id="inTchTempPass" class="input-3d" required minlength="4" placeholder="e.g. 1234 ya Raj@123">
+                    <input type="text" id="inTchTempPass" class="input-3d" required minlength="4" placeholder="जैसे: 1234 या Raj@123">
                 </div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: end;">
@@ -1206,13 +1204,13 @@
         </div>
         <div style="font-size: 12px; color: #334155; line-height: 1.55; display: flex; flex-direction: column; gap: 8px;">
             <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px; border-radius: 12px;">
-                <strong>Step 1:</strong> Apne Google Drive mein ek nayi <strong>Google Sheet</strong> banayein.<br>
-                <strong>Step 2:</strong> Sheet ke upar menu mein <strong>Extensions → Apps Script</strong> kholein.<br>
-                <strong>Step 3:</strong> Neeche diye gaye button se code copy karke wahan paste karein aur Save karein.<br>
-                <strong>Step 4:</strong> Upar <strong>Deploy → New deployment → Web app</strong> chunein:<br>
+                <strong>चरण 1:</strong> अपने Google Drive में एक नई <strong>Google Sheet</strong> बनाएं।<br>
+                <strong>चरण 2:</strong> शीट के ऊपर मेनू में <strong>Extensions → Apps Script</strong> खोलें।<br>
+                <strong>चरण 3:</strong> नीचे दिए गए बटन से कोड कॉपी करके वहाँ पेस्ट करें और सेव करें।<br>
+                <strong>चरण 4:</strong> ऊपर <strong>Deploy → New deployment → Web app</strong> चुनें:<br>
                 • Execute as: <strong>Me</strong><br>
                 • Who has access: <strong>Anyone</strong><br>
-                <strong>Step 5:</strong> Deploy karke jo <strong>Web App URL</strong> mile usse app mein paste karke <strong>Connect</strong> dabayein!
+                <strong>चरण 5:</strong> डिप्लॉय करने के बाद जो <strong>Web App URL</strong> मिले, उसे ऐप में पेस्ट करके <strong>Connect</strong> दबाएं!
             </div>
             <button type="button" onclick="copyAppsScriptCode()" class="btn-3d btn-gold" style="width: 100%; padding: 11px; font-size: 12px;">
                 📋 Copy Google Apps Script Code
@@ -1728,13 +1726,13 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         ta.select();
         ta.setSelectionRange(0, 99999);
         navigator.clipboard ? navigator.clipboard.writeText(ta.value) : document.execCommand('copy');
-        showToast('Apps Script code copied! Google Sheet ke Apps Script mein paste karein.');
+        showToast('Apps Script कोड कॉपी हो गया! Google Sheet के Apps Script में पेस्ट करें।');
     }
 
     async function saveGoogleSheetUrlFromLogin() {
         const url = document.getElementById('loginSheetUrlIn').value.trim();
         if (!url.startsWith('https://script.google.com/')) {
-            showToast('Sahi Google Apps Script Web App URL paste karein!');
+            showToast('सही Google Apps Script Web App URL पेस्ट करें!');
             return;
         }
         setWebAppUrl(url);
@@ -1749,7 +1747,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     async function saveGoogleSheetUrlFromSettings() {
         const url = document.getElementById('settingsSheetUrlIn').value.trim();
         if (!url.startsWith('https://script.google.com/')) {
-            showToast('Sahi Google Apps Script Web App URL paste karein!');
+            showToast('सही Google Apps Script Web App URL पेस्ट करें!');
             return;
         }
         setWebAppUrl(url);
@@ -2110,9 +2108,9 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             inp.type = 'tel';
             inp.value = '';
             lbl.textContent = 'Teacher Registered Mobile Number (10-Digit)';
-            inp.placeholder = 'Sirf registered 10-digit mobile number';
+            inp.placeholder = 'केवल पंजीकृत 10-अंकों का मोबाइल नंबर';
             passLbl.textContent = 'Teacher Password';
-            pinInp.placeholder = 'Principal dwara diya gaya password';
+            pinInp.placeholder = 'प्रधानाचार्य द्वारा दिया गया पासवर्ड';
         } else {
             inp.type = 'tel';
             inp.value = '';
@@ -2142,7 +2140,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
         const exists = db.students.some(s => String(s.phone).replace(/\D/g, '').slice(-10) === phone);
         if (!exists) {
-            err.textContent = 'Yeh mobile number kisi student ke saath registered nahi hai!';
+            err.textContent = 'यह मोबाइल नंबर किसी विद्यार्थी के साथ पंजीकृत नहीं है!';
             err.classList.remove('hidden');
             return;
         }
@@ -2173,7 +2171,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             const validId = (cleanU === DEFAULT_PRINCIPAL_EMAIL.toLowerCase() || cleanPhone === DEFAULT_PRINCIPAL_PHONE);
             const expectedPass = db.principalPass || DEFAULT_PRINCIPAL_PASS;
             if (!validId || pVal !== expectedPass) {
-                err.textContent = 'Principal ID ya Password galat hai! (Default Password: Baba@1234)';
+                err.textContent = 'प्रधानाचार्य आईडी या पासवर्ड गलत है! (डिफ़ॉल्ट पासवर्ड: Baba@1234)';
                 err.classList.remove('hidden');
                 return;
             }
@@ -2187,7 +2185,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             const digitsOnly = uVal.replace(/\D/g, '');
             const cleanPhone = digitsOnly.slice(-10);
             if (cleanPhone.length !== 10 || /[a-zA-Z@]/.test(uVal)) {
-                err.textContent = 'Teacher sirf Principal dwara register kiye gaye 10-digit Mobile Number se hi login kar sakte hain!';
+                err.textContent = 'शिक्षक केवल प्रधानाचार्य द्वारा पंजीकृत 10-अंकों के मोबाइल नंबर से ही लॉगिन कर सकते हैं!';
                 err.classList.remove('hidden');
                 return;
             }
@@ -2195,17 +2193,17 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 String(t.phone || '').replace(/\D/g, '').slice(-10) === cleanPhone
             );
             if (!tch) {
-                err.textContent = 'Yeh Mobile Number Teacher ke roop mein registered nahi hai.';
+                err.textContent = 'यह मोबाइल नंबर शिक्षक के रूप में पंजीकृत नहीं है।';
                 err.classList.remove('hidden');
                 return;
             }
             if (tch.active === false) {
-                err.textContent = 'Aapka Teacher access Principal dwara band (Disabled) kiya gaya hai.';
+                err.textContent = 'आपकी शिक्षक पहुंच प्रधानाचार्य द्वारा बंद (Disabled) कर दी गई है।';
                 err.classList.remove('hidden');
                 return;
             }
             if (String(tch.password || '') !== pVal) {
-                err.textContent = 'Teacher Password galat hai!';
+                err.textContent = 'शिक्षक पासवर्ड गलत है!';
                 err.classList.remove('hidden');
                 return;
             }
@@ -2225,13 +2223,13 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const cleanPhone = uVal.replace(/\D/g, '').slice(-10);
         const foundStu = db.students.some(s => String(s.phone).replace(/\D/g, '').slice(-10) === cleanPhone);
         if (!foundStu) {
-            err.textContent = 'Yeh mobile number kisi student ke saath registered nahi hai.';
+            err.textContent = 'यह मोबाइल नंबर किसी विद्यार्थी के साथ पंजीकृत नहीं है।';
             err.classList.remove('hidden');
             return;
         }
         const savedPass = db.parentPasswords && db.parentPasswords[cleanPhone];
         if (!savedPass || pVal !== savedPass) {
-            err.textContent = 'Parent password galat hai ya pehle "Create / Reset Password" se banayein.';
+            err.textContent = 'अभिभावक पासवर्ड गलत है या पहले "Create / Reset Password" से नया पासवर्ड बनाएं।';
             err.classList.remove('hidden');
             return;
         }
@@ -2243,7 +2241,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     function updatePrincipalPassword() {
         const np = (document.getElementById('inPrincipalPassChange').value || '').trim();
         if (np.length < 4) {
-            showToast('Password kam-se-kam 4 akshar ka rakhein.');
+            showToast('पासवर्ड कम-से-कम 4 अक्षरों का रखें।');
             return;
         }
         db.principalPass = np;
@@ -3231,7 +3229,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!mount) return;
 
         if (db.classes.length === 0) {
-            mount.innerHTML = `<div style="padding:14px;background:#f8fafc;border-radius:12px;text-align:center;font-size:12px;color:#64748b;font-weight:700;">Abhi koi class nahi hai. Upar form se pehli class add karein.</div>`;
+            mount.innerHTML = `<div style="padding:14px;background:#f8fafc;border-radius:12px;text-align:center;font-size:12px;color:#64748b;font-weight:700;">अभी कोई कक्षा नहीं है। ऊपर दिए गए फ़ॉर्म से पहली कक्षा जोड़ें।</div>`;
             return;
         }
 
@@ -3293,8 +3291,8 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const stuCount = db.students.filter(s => s.classId === classId).length;
         const examCount = db.exams.filter(ex => ex.classId === classId).length;
         document.getElementById('deleteClassWarnText').innerHTML = `
-            Kya aap <strong>"${esc(cls.name)}"</strong> ko permanently delete karna chahte hain?<br>
-            Is class ke <strong>${stuCount} students</strong> aur <strong>${examCount} exams</strong> ka record bhi hat jayega.
+            क्या आप <strong>"${esc(cls.name)}"</strong> को स्थायी रूप से हटाना चाहते हैं?<br>
+            इस कक्षा के <strong>${stuCount} विद्यार्थियों</strong> और <strong>${examCount} परीक्षाओं</strong> का रिकॉर्ड भी हट जाएगा।
         `;
         openModal('deleteClassConfirmModal');
     }
@@ -3361,7 +3359,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
         const mount = document.getElementById('attendanceCardsMount');
         if (list.length === 0) {
-            mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;padding:24px;">Is class mein koi student nahi hai. Neeche <strong>+ Student</strong> button dabayein.</div>`;
+            mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;padding:24px;">इस कक्षा में कोई विद्यार्थी नहीं है। नीचे <strong>+ Student</strong> बटन दबाएं।</div>`;
             return;
         }
 
@@ -3446,7 +3444,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const mount = document.getElementById('absentQueueMount');
 
         if (abs.length === 0) {
-            mount.innerHTML = `<div style="padding:14px;background:#dcfce7;color:#166534;border-radius:14px;font-weight:800;font-size:13px;">Aaj is class mein koi student Absent nahi hai! 🎉</div>`;
+            mount.innerHTML = `<div style="padding:14px;background:#dcfce7;color:#166534;border-radius:14px;font-weight:800;font-size:13px;">आज इस कक्षा में कोई विद्यार्थी अनुपस्थित नहीं है! 🎉</div>`;
         } else {
             mount.innerHTML = abs.map(stu => `
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;">
@@ -3486,7 +3484,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     function clearClassAttendanceForDate() {
         if (!isCurrentUserPrincipalOrAdmin()) return;
         const dt = document.getElementById('attDatePicker').value || getTodayISO();
-        if (!confirm(`Kya aap ${dt} ki is class ki attendance hatana (clear karna) chahte hain?`)) return;
+        if (!confirm(`क्या आप ${dt} की इस कक्षा की उपस्थिति हटाना (क्लियर करना) चाहते हैं?`)) return;
         if (db.attendance && db.attendance[dt]) {
             db.students.filter(s => s.classId === db.selectedClassId).forEach(s => {
                 delete db.attendance[dt][s.id];
@@ -3495,17 +3493,17 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         }
         saveDB();
         renderAttendanceCards();
-        showToast(`${dt} ki attendance hata di gayi!`);
+        showToast(`${dt} की उपस्थिति हटा दी गई!`);
     }
 
     function deleteStudentRecord(stuId) {
         if (!isCurrentUserPrincipalOrAdmin()) {
-            showToast('Keval Principal/Admin hi student delete kar sakte hain.');
+            showToast('केवल प्रधानाचार्य/एडमिन ही विद्यार्थी को हटा सकते हैं।');
             return;
         }
         const stu = db.students.find(s => s.id === stuId);
         if (!stu) return;
-        if (!confirm(`Kya aap student "${stu.name} (#${stu.roll})" ko permanently delete karna chahte hain?`)) return;
+        if (!confirm(`क्या आप विद्यार्थी "${stu.name} (#${stu.roll})" को स्थायी रूप से हटाना चाहते हैं?`)) return;
 
         db.students = db.students.filter(s => s.id !== stuId);
         Object.keys(db.attendance || {}).forEach(dt => {
@@ -3763,13 +3761,13 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!isCurrentUserPrincipalOrAdmin()) return;
         const stu = db.students.find(s => s.id === stuId);
         if (!stu) return;
-        if (!confirm(`Kya aap ${stu.name} ka jama fee record (₹${stu.feePaid}) hatana (reset karna) chahte hain?`)) return;
+        if (!confirm(`क्या आप ${stu.name} का जमा फीस रिकॉर्ड (₹${stu.feePaid}) हटाना (रीसेट करना) चाहते हैं?`)) return;
         stu.feePaid = 0;
         stu.feeHistory = [];
         stu.lastPayRemark = 'Reset by Principal';
         saveDB();
         renderFeeCards();
-        showToast(`${stu.name} ka fee record hata diya gaya!`);
+        showToast(`${stu.name} का फीस रिकॉर्ड हटा दिया गया!`);
     }
 
     function sendFeeDueWhatsApp(stuId) {
@@ -3788,7 +3786,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const pendingList = db.students.filter(s => s.classId === db.selectedClassId && Math.max(0, (s.feeTotal || 0) - (s.feePaid || 0)) > 0);
         const mount = document.getElementById('feeDueQueueMount');
         if (pendingList.length === 0) {
-            mount.innerHTML = `<div style="padding:14px;background:#dcfce7;color:#166534;border-radius:14px;font-weight:800;font-size:13px;">Is class ke sabhi students ki fee jama hai! 🎉</div>`;
+            mount.innerHTML = `<div style="padding:14px;background:#dcfce7;color:#166534;border-radius:14px;font-weight:800;font-size:13px;">इस कक्षा के सभी विद्यार्थियों की फीस जमा है! 🎉</div>`;
         } else {
             mount.innerHTML = pendingList.map(stu => {
                 const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
@@ -3890,7 +3888,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         saveDB();
         renderFeeCards();
         closeModal('addMonthFeeModal');
-        showToast(`${monthLabel} ki ₹${addAmt} fee add ho gayi!`);
+        showToast(`${monthLabel} की ₹${addAmt} फीस जुड़ गई!`);
     }
 
     function openFeeReceipt(stuId) {
@@ -4047,7 +4045,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const list = db.exams.filter(ex => ex.classId === db.selectedClassId);
         const mount = document.getElementById('examCardsMount');
         if (list.length === 0) {
-            mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;padding:24px;">Is class ka koi exam nahi hai. Upar <strong>+ New Exam</strong> dabayein.</div>`;
+            mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;padding:24px;">इस कक्षा की कोई परीक्षा नहीं है। ऊपर <strong>+ New Exam</strong> दबाएं।</div>`;
             return;
         }
 
@@ -4084,8 +4082,8 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!ex) return;
         pendingDeleteExamId = examId;
         document.getElementById('deleteExamWarnText').innerHTML = `
-            Kya aap exam <strong>"${esc(ex.title)} (${esc(ex.subject)})"</strong> ko permanently delete karna chahte hain?<br>
-            Is exam ke sabhi students ke marks bhi delete ho jayenge.
+            क्या आप परीक्षा <strong>"${esc(ex.title)} (${esc(ex.subject)})"</strong> को स्थायी रूप से हटाना चाहते हैं?<br>
+            इस परीक्षा के सभी विद्यार्थियों के अंक भी हट जाएंगे।
         `;
         openModal('deleteExamConfirmModal');
     }
@@ -4636,7 +4634,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         // the parent's saved WhatsApp number with that public link in the text.
         const cleanDigits = String(phone || '').replace(/\D/g, '').slice(-10);
         if (cleanDigits.length !== 10) {
-            showToast('Parent ka 10-digit WhatsApp number student record mein sahi se save karein.');
+            showToast('अभिभावक का 10-अंकों का व्हाट्सऐप नंबर विद्यार्थी रिकॉर्ड में सही से सेव करें।');
             return;
         }
 
@@ -4650,7 +4648,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         a.remove();
         setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
 
-        showToast('Receipt/result ka online link ban raha hai...');
+        showToast('रसीद/परिणाम का ऑनलाइन लिंक बन रहा है...');
         const publicImageLink = await uploadGeneratedPngForParentLink(blob, shareName);
         if (!publicImageLink) {
             showToast('इमेज का ऑनलाइन लिंक नहीं बन पाया। WhatsApp संदेश नहीं खोला गया। Google Sheets / Apps Script कनेक्शन जाँचें।');
@@ -4665,9 +4663,9 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!chatWindow) window.location.href = directChatUrl;
 
         if (publicImageLink) {
-            showToast(`${parentNameLabel || 'Parent'} ka WhatsApp khul raha hai. Pura message aur sirf image ka link tayyar hai; Send dabayein.`);
+            showToast(`${parentNameLabel || 'अभिभावक'} का व्हाट्सऐप खुल रहा है। पूरा संदेश और इमेज का लिंक तैयार है; Send दबाएं।`);
         } else {
-            showToast('WhatsApp chat khul rahi hai. Online link nahi ban saka; downloaded PNG attach karein. Google Sheets sync connection check karein.');
+            showToast('व्हाट्सऐप चैट खुल रही है। ऑनलाइन लिंक नहीं बन सका; डाउनलोड की गई PNG संलग्न करें। Google Sheets सिंक कनेक्शन जांचें।');
         }
     }
 
@@ -4742,12 +4740,12 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 if (!db.principalProfile) db.principalProfile = { name: 'Satyanand Sir', subject: 'Principal & Director', photo: '' };
                 db.principalProfile.photo = dataUrl;
                 renderPrincipalProfileSettings();
-                showToast('Principal photo Google Drive me upload ho raha hai...');
+                showToast('प्रधानाचार्य का फ़ोटो Google Drive में अपलोड हो रहा है...');
                 const driveUrl = await uploadImageToGoogleDrive(dataUrl, `principal_${Date.now()}.jpg`);
                 db.principalProfile.photo = driveUrl;
                 saveDB();
                 renderPrincipalProfileSettings();
-                showToast('Principal photo save & sync ho gaya!');
+                showToast('प्रधानाचार्य का फ़ोटो सेव और सिंक हो गया!');
             };
             img.src = ev.target.result;
         };
@@ -4762,7 +4760,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         saveDB();
         renderPrincipalProfileSettings();
         routeCurrentScreen();
-        showToast('Principal profile save & sync ho gaya!');
+        showToast('प्रधानाचार्य प्रोफ़ाइल सेव और सिंक हो गई!');
     }
 
     function processTeacherPhotoUpload(event) {
@@ -4770,7 +4768,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!file) return;
         isUploadingTeacherPhoto = true;
         const saveBtn = document.querySelector('#addTeacherModal button[type="submit"]');
-        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '⏳ Photo Upload Ho Raha Hai...'; }
+        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '⏳ फ़ोटो अपलोड हो रहा है...'; }
 
         const reader = new FileReader();
         reader.onload = function (ev) {
@@ -4790,7 +4788,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 if (pImg) pImg.src = dataUrl;
                 if (row) row.classList.remove('hidden');
 
-                showToast('Teacher photo Google Drive me upload ho raha hai...');
+                showToast('शिक्षक का फ़ोटो Google Drive में अपलोड हो रहा है...');
                 const driveUrl = await uploadImageToGoogleDrive(dataUrl, `teacher_${Date.now()}.jpg`);
                 tempUploadedTeacherPhoto = driveUrl;
                 if (pImg) pImg.src = normalizeDriveImgUrl(driveUrl);
@@ -4857,14 +4855,14 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             : allTeachers;
 
         if (filtered.length === 0) {
-            mount.innerHTML = `<div class="card-3d" style="font-size:13px;color:#64748b;padding:18px;text-align:center;font-weight:700;">${allTeachers.length === 0 ? 'Abhi koi teacher add nahi hai. Upar "+ Add Teacher" dabayein.' : 'Koi matching teacher nahi mila.'}</div>`;
+            mount.innerHTML = `<div class="card-3d" style="font-size:13px;color:#64748b;padding:18px;text-align:center;font-weight:700;">${allTeachers.length === 0 ? 'अभी कोई शिक्षक नहीं जोड़ा गया है। ऊपर "+ Add Teacher" दबाएं।' : 'कोई मिलता-जुलता शिक्षक नहीं मिला।'}</div>`;
             return;
         }
 
         mount.innerHTML = filtered.map(t => {
             const isActive = t.active !== false;
             const isTchAdmin = t.role === 'admin';
-            const shareText = `नमस्ते ${t.name} जी,\n*${coaching}* ${isTchAdmin ? 'Admin Teacher' : 'Teacher'} App Login Details:\n📱 Mobile Login ID: *${t.phone}*\n🔑 Password: *${t.password || ''}*\n📚 Subject: ${t.subject}\n(Sirf isi mobile number se login hoga)`;
+            const shareText = `नमस्ते ${t.name} जी,\n*${coaching}* ${isTchAdmin ? 'Admin Teacher' : 'Teacher'} App Login Details:\n📱 Mobile Login ID: *${t.phone}*\n🔑 Password: *${t.password || ''}*\n📚 Subject: ${t.subject}\n(केवल इसी मोबाइल नंबर से लॉगिन होगा)`;
             const waUrl = getPersonalWhatsAppLink(t.phone, shareText);
             const avHtml = renderAvatarCircle(t.photo, (t.name || 'T')[0], 54, isTchAdmin ? '#f59e0b' : '#1d4ed8');
 
@@ -4919,11 +4917,11 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     function saveNewTeacher(e) {
         e.preventDefault();
         if (isUploadingTeacherPhoto) {
-            showToast('Kripya 2 second rukein, photo upload ho raha hai...');
+            showToast('कृपया 2 सेकंड रुकें, फ़ोटो अपलोड हो रहा है...');
             return;
         }
         if (!isCurrentUserPrincipalOrAdmin()) {
-            showToast('Keval Principal ya Admin Teacher hi yeh kaam kar sakte hain!');
+            showToast('केवल प्रधानाचार्य या एडमिन शिक्षक ही यह कार्य कर सकते हैं!');
             return;
         }
         const editId = document.getElementById('editTchId').value;
@@ -4934,13 +4932,13 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const role = document.getElementById('inTchRole').value === 'admin' ? 'admin' : 'teacher';
 
         if (!name || !subject || phone.length !== 10 || password.length < 4) {
-            showToast('Sahi 10-digit Mobile Number aur kam-se-kam 4 akshar ka Password dalein.');
+            showToast('सही 10-अंकों का मोबाइल नंबर और कम-से-कम 4 अक्षरों का पासवर्ड डालें।');
             return;
         }
         if (!db.teachers) db.teachers = [];
         const duplicate = db.teachers.find(t => t.id !== editId && String(t.phone).replace(/\D/g, '').slice(-10) === phone);
         if (duplicate) {
-            showToast('Yeh mobile number pehle se kisi aur Teacher ke paas hai!');
+            showToast('यह मोबाइल नंबर पहले से किसी अन्य शिक्षक के पास पंजीकृत है!');
             return;
         }
 
@@ -4966,7 +4964,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 photo: tempUploadedTeacherPhoto,
                 active: true
             });
-            showToast(`${name} (${role === 'admin' ? 'Admin Teacher' : 'Teacher'}) added! Sirf ${phone} se login hoga.`);
+            showToast(`${name} (${role === 'admin' ? 'एडमिन शिक्षक' : 'शिक्षक'}) जोड़े गए! केवल ${phone} से लॉगिन होगा।`);
         }
 
         saveDB();
@@ -4987,7 +4985,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         t.role = newRole;
         saveDB();
         renderTeachersList();
-        showToast(`${t.name} ko ${newRole === 'admin' ? 'Admin Teacher' : 'Normal Teacher'} bana diya gaya!`);
+        showToast(`${t.name} को ${newRole === 'admin' ? 'एडमिन शिक्षक' : 'सामान्य शिक्षक'} बना दिया गया!`);
     }
 
     function toggleTeacherStatus(id, nextActiveState) {
@@ -4997,14 +4995,14 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         t.active = nextActiveState;
         saveDB();
         renderTeachersList();
-        showToast(`${t.name} ka access ${nextActiveState ? 'Enable' : 'Disable'} ho gaya!`);
+        showToast(`${t.name} की पहुंच ${nextActiveState ? 'सक्रिय (Enable)' : 'निष्क्रिय (Disable)'} हो गई!`);
     }
 
     function deleteTeacherRecord(id) {
         if (!isCurrentUserPrincipalOrAdmin()) return;
         const t = (db.teachers || []).find(x => x.id === id);
         if (!t) return;
-        if (!confirm(`Kya aap ${t.name} ko permanently delete karna chahte hain?`)) return;
+        if (!confirm(`क्या आप ${t.name} को स्थायी रूप से हटाना चाहते हैं?`)) return;
         db.teachers = db.teachers.filter(x => x.id !== id);
         saveDB();
         renderTeachersList();
@@ -5093,7 +5091,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
     function uploadCustomBrandLogo(e) {
         if (!isCurrentUserPrincipalOrAdmin()) {
-            showToast('Logo edit karne ka adhikar sirf Principal ya Admin Teacher ko hai!');
+            showToast('लोगो संपादित करने का अधिकार केवल प्रधानाचार्य या एडमिन शिक्षक को है!');
             return;
         }
         const file = e.target.files[0];
@@ -5112,7 +5110,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
     function resetOfficialBabaLogo() {
         if (!isCurrentUserPrincipalOrAdmin()) {
-            showToast('Logo edit karne ka adhikar sirf Principal ya Admin Teacher ko hai!');
+            showToast('लोगो संपादित करने का अधिकार केवल प्रधानाचार्य या एडमिन शिक्षक को है!');
             return;
         }
         db.branding.customLogo = '';
@@ -5125,7 +5123,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
     function saveBrandChanges() {
         if (!isCurrentUserPrincipalOrAdmin()) {
-            showToast('Logo edit karne ka adhikar sirf Principal ya Admin Teacher ko hai!');
+            showToast('लोगो संपादित करने का अधिकार केवल प्रधानाचार्य या एडमिन शिक्षक को है!');
             return;
         }
         db.branding.title = document.getElementById('inBrandTitle').value.trim() || 'BABA COACHING CENTRE';
@@ -5138,7 +5136,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     function openModal(id) {
         if (id === 'logoModal') {
             if (!isCurrentUserPrincipalOrAdmin()) {
-                showToast('Logo edit karne ka adhikar sirf Principal ya Admin Teacher ko hai!');
+                showToast('लोगो संपादित करने का अधिकार केवल प्रधानाचार्य या एडमिन शिक्षक को है!');
                 return;
             }
             document.getElementById('inBrandTitle').value = (db.branding && db.branding.title) || 'BABA COACHING CENTRE';
