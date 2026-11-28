@@ -761,11 +761,39 @@
                             <button type="button" onclick="openModal('googleSetupModal')" class="btn-3d btn-light" style="padding: 9px; font-size: 11px;">📋 Apps Script Code</button>
                         </div>
                         <hr style="border:none;border-top:1px dashed #cbd5e1;margin:2px 0;">
-                        <div class="principal-only">
-                            <label class="lbl">Principal Mobile Number (Login &amp; Online Fee Payment)</label>
-                            <div style="display: flex; gap: 6px;">
-                                <input type="tel" id="inPrincipalPayPhone" class="input-3d" placeholder="e.g. 9162510000" maxlength="15" style="font-size: 12px;">
-                                <button type="button" onclick="updatePrincipalPayPhone()" class="btn-3d btn-green" style="padding: 8px 12px; font-size: 11px; white-space: nowrap;">Save No.</button>
+                        <div class="principal-only" style="background: linear-gradient(135deg, #f5f3ff, #eff6ff); border: 1.5px solid #c4b5fd; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 12px; font-weight: 900; color: #4c1d95;">💳 Online Fee UPI ID, Mobile &amp; QR Setup</div>
+                                <span class="badge badge-blue">Visible to Parents</span>
+                            </div>
+                            <div>
+                                <label class="lbl">Principal Mobile Number (Login &amp; Payment)</label>
+                                <input type="tel" id="inPrincipalPayPhone" class="input-3d" placeholder="e.g. 9162519511" maxlength="15" style="font-size: 12px;">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 6px;">
+                                <div>
+                                    <label class="lbl">Official UPI ID *</label>
+                                    <input type="text" id="inPrincipalUpiId" class="input-3d" placeholder="e.g. 91625195110@ybl" style="font-size: 12px;">
+                                </div>
+                                <div>
+                                    <label class="lbl">Account / Bank Label</label>
+                                    <input type="text" id="inPrincipalUpiBank" class="input-3d" placeholder="Punjab National Bank - 1145" style="font-size: 11px;">
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #ddd6fe; border-radius: 12px; padding: 8px;">
+                                <img id="settingsUpiQrPreview" src="" alt="UPI QR" style="width: 58px; height: 58px; object-fit: contain; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; flex-shrink: 0;">
+                                <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                                    <div style="font-size: 10px; font-weight: 800; color: #475569;">UPI QR Code (Auto-synced with Receipt &amp; Parent Portal)</div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                                        <label class="btn-3d btn-light" style="padding: 6px 4px; font-size: 10px; cursor: pointer;">
+                                            📷 Upload QR
+                                            <input type="file" accept="image/*" onchange="uploadPrincipalUpiQr(event)" class="hidden">
+                                        </label>
+                                        <button type="button" onclick="savePrincipalUpiSettings()" class="btn-3d btn-green" style="padding: 6px 4px; font-size: 10px;">
+                                            💾 Save UPI &amp; QR
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <hr style="border:none;border-top:1px dashed #cbd5e1;margin:2px 0;">
@@ -1767,6 +1795,64 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 </div>
 
 
+<!-- 15. Interactive Photo Crop & Rotate Studio Modal -->
+<div id="photoCropperModal" class="modal-overlay hidden" style="z-index: 160;">
+    <div class="modal-sheet" style="max-width: 480px;">
+        <div class="sheet-bar"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div>
+                <h3 id="cropperModalTitle" style="font-size: 15px; font-weight: 900; color: #0e336b;">✂️ Crop &amp; Rotate Photo</h3>
+                <div style="font-size: 10px; color: #64748b; font-weight: 700;">Drag box/corners to crop • Tap Rotate to turn 90°</div>
+            </div>
+            <button type="button" onclick="cancelImageCropper()" class="btn-3d btn-light" style="padding: 5px 10px;">✕</button>
+        </div>
+
+        <div id="cropperStage" style="position: relative; width: 100%; height: 290px; background: #0f172a; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; touch-action: none; user-select: none; border: 2px solid #cbd5e1;">
+            <canvas id="cropperCanvas" style="display: block; max-width: 100%; max-height: 100%;"></canvas>
+            <div id="cropSelectionBox" style="position: absolute; border: 2.5px solid #fbbf24; box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.58); cursor: move; touch-action: none;">
+                <!-- Rule of thirds grid -->
+                <div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);pointer-events:none;">
+                    <div style="border-right:1px dashed rgba(255,255,255,0.45);border-bottom:1px dashed rgba(255,255,255,0.45);"></div>
+                    <div style="border-right:1px dashed rgba(255,255,255,0.45);border-bottom:1px dashed rgba(255,255,255,0.45);"></div>
+                    <div style="border-bottom:1px dashed rgba(255,255,255,0.45);"></div>
+                    <div style="border-right:1px dashed rgba(255,255,255,0.45);border-bottom:1px dashed rgba(255,255,255,0.45);"></div>
+                    <div style="border-right:1px dashed rgba(255,255,255,0.45);border-bottom:1px dashed rgba(255,255,255,0.45);"></div>
+                    <div style="border-bottom:1px dashed rgba(255,255,255,0.45);"></div>
+                    <div style="border-right:1px dashed rgba(255,255,255,0.45);"></div>
+                    <div style="border-right:1px dashed rgba(255,255,255,0.45);"></div>
+                    <div></div>
+                </div>
+                <!-- Corner Resize Handles -->
+                <div data-handle="nw" style="position:absolute;top:-9px;left:-9px;width:20px;height:20px;border-radius:50%;background:#fbbf24;border:2px solid #0b1938;cursor:nwse-resize;"></div>
+                <div data-handle="ne" style="position:absolute;top:-9px;right:-9px;width:20px;height:20px;border-radius:50%;background:#fbbf24;border:2px solid #0b1938;cursor:nesw-resize;"></div>
+                <div data-handle="sw" style="position:absolute;bottom:-9px;left:-9px;width:20px;height:20px;border-radius:50%;background:#fbbf24;border:2px solid #0b1938;cursor:nesw-resize;"></div>
+                <div data-handle="se" style="position:absolute;bottom:-9px;right:-9px;width:20px;height:20px;border-radius:50%;background:#fbbf24;border:2px solid #0b1938;cursor:nwse-resize;"></div>
+            </div>
+        </div>
+
+        <!-- Aspect Ratio Quick Chips -->
+        <div style="display: flex; gap: 6px; margin-top: 9px; overflow-x: auto;">
+            <button type="button" onclick="setCropAspect('free')" id="cropAsp-free" class="class-chip active" style="padding: 5px 10px; font-size: 11px;">⬜ Free</button>
+            <button type="button" onclick="setCropAspect('1:1')" id="cropAsp-1:1" class="class-chip" style="padding: 5px 10px; font-size: 11px;">👤 1:1 Photo</button>
+            <button type="button" onclick="setCropAspect('idcard')" id="cropAsp-idcard" class="class-chip" style="padding: 5px 10px; font-size: 11px;">🪪 ID / Aadhaar</button>
+            <button type="button" onclick="resetCropBoxFull()" class="class-chip" style="padding: 5px 10px; font-size: 11px;">↔️ Full Image</button>
+        </div>
+
+        <!-- Rotate Controls -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 8px; margin-top: 10px;">
+            <button type="button" onclick="rotateCropperImage(-90)" class="btn-3d btn-light" style="padding: 9px 6px; font-size: 12px;">
+                ↺ Rotate Left
+            </button>
+            <button type="button" onclick="rotateCropperImage(90)" class="btn-3d btn-light" style="padding: 9px 6px; font-size: 12px;">
+                ↻ Rotate Right
+            </button>
+            <button type="button" onclick="confirmImageCropper()" class="btn-3d btn-green" style="padding: 9px 8px; font-size: 12px;">
+                ✅ Crop &amp; Use
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- 11. Logo & Coaching Name Settings Modal -->
 <div id="logoModal" class="modal-overlay hidden">
     <div class="modal-sheet">
@@ -1806,8 +1892,12 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     const DB_STORAGE_KEY = 'baba_coaching_gsheets_v1';
     const GSHEET_URL_KEY = 'baba_coaching_webapp_url';
     const DEFAULT_PRINCIPAL_EMAIL = 'Satyanand916251@gmail.com';
-    const DEFAULT_PRINCIPAL_PHONE = '9162510000';
+    const DEFAULT_PRINCIPAL_PHONE = '9162519511';
     const DEFAULT_PRINCIPAL_PASS = 'Baba@1234';
+    const DEFAULT_UPI_ID = '91625195110@ybl';
+    const DEFAULT_UPI_BANK = 'Punjab National Bank - 1145';
+    const DEFAULT_UPI_NAME = 'SATYANAND KUMAR';
+    const DEFAULT_UPI_QR_IMG = 'data:image/png;base64,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';
 
     let syncPollTimer = null;
     let cloudWriteTimer = null;
@@ -1947,6 +2037,9 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                         if (!Array.isArray(db.classPdfs)) db.classPdfs = [];
                         if (!Array.isArray(db.studentQueries)) db.studentQueries = [];
                         if (!db.principalPayPhone) db.principalPayPhone = DEFAULT_PRINCIPAL_PHONE;
+                        if (!db.upiId) db.upiId = DEFAULT_UPI_ID;
+                        if (!db.upiBank) db.upiBank = DEFAULT_UPI_BANK;
+                        if (!db.upiQr) db.upiQr = DEFAULT_UPI_QR_IMG;
                         if (!db.leaveSoundId) db.leaveSoundId = localStorage.getItem(LOCAL_LEAVE_SOUND_KEY) || 'ios_01';
                         if (!db.principalProfile) db.principalProfile = { name: 'Satyanand Sir', subject: 'Principal & Director', photo: '' };
                         db.currentUser = activeUser;
@@ -2053,6 +2146,9 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                     if (!Array.isArray(parsed.classPdfs)) parsed.classPdfs = [];
                     if (!Array.isArray(parsed.studentQueries)) parsed.studentQueries = [];
                     if (!parsed.principalPayPhone) parsed.principalPayPhone = DEFAULT_PRINCIPAL_PHONE;
+                    if (!parsed.upiId) parsed.upiId = DEFAULT_UPI_ID;
+                    if (!parsed.upiBank) parsed.upiBank = DEFAULT_UPI_BANK;
+                    if (!parsed.upiQr) parsed.upiQr = DEFAULT_UPI_QR_IMG;
                     if (!parsed.leaveSoundId) parsed.leaveSoundId = 'ios_01';
                     if (!parsed.principalProfile) parsed.principalProfile = { name: 'Satyanand Sir', subject: 'Principal & Director', photo: '' };
                     if (!Array.isArray(parsed.teachers)) parsed.teachers = [];
@@ -2067,6 +2163,9 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             selectedClassId: 'c1',
             principalPass: DEFAULT_PRINCIPAL_PASS,
             principalPayPhone: DEFAULT_PRINCIPAL_PHONE,
+            upiId: DEFAULT_UPI_ID,
+            upiBank: DEFAULT_UPI_BANK,
+            upiQr: DEFAULT_UPI_QR_IMG,
             principalProfile: { name: 'Satyanand Sir', subject: 'Principal & Director', photo: '' },
             waTemplate: WA_TEMPLATES.hi,
             branding: { title: 'BABA COACHING CENTRE', customLogo: '' },
@@ -2476,6 +2575,18 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (payPhoneIn && document.activeElement !== payPhoneIn) {
             payPhoneIn.value = db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE;
         }
+        const upiIn = document.getElementById('inPrincipalUpiId');
+        if (upiIn && document.activeElement !== upiIn) {
+            upiIn.value = db.upiId || DEFAULT_UPI_ID;
+        }
+        const upiBankIn = document.getElementById('inPrincipalUpiBank');
+        if (upiBankIn && document.activeElement !== upiBankIn) {
+            upiBankIn.value = db.upiBank || DEFAULT_UPI_BANK;
+        }
+        const qrPrev = document.getElementById('settingsUpiQrPreview');
+        if (qrPrev) {
+            qrPrev.src = normalizeDriveImgUrl(db.upiQr || DEFAULT_UPI_QR_IMG) || DEFAULT_UPI_QR_IMG;
+        }
         renderPrincipalProfileSettings();
         populateLeaveSoundDropdown();
         updateLeaveNotifications();
@@ -2723,12 +2834,47 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                         <div style="font-size:12px;font-weight:900;color:#0e336b;">💰 फीस भुगतान विवरण (कुल: ₹${stu.feeTotal})</div>
                         <button type="button" onclick="openFeeReceipt('${stu.id}')" class="btn-3d btn-light" style="padding:4px 9px;font-size:10px;">🧾 फीस रसीद</button>
                     </div>
-                    <div style="background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1.5px solid #6ee7b7;border-radius:12px;padding:9px 10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                        <div>
-                            <div style="font-size:10px;font-weight:900;color:#065f46;">💳 ऑनलाइन फीस जमा करें (यूपीआई / फ़ोनपे / गूगल पे)</div>
-                            <div style="font-size:13px;font-weight:900;color:#0f172a;margin-top:2px;">प्रधानाचार्य नंबर: +91 ${esc(db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE)}</div>
+                    <div style="background:linear-gradient(145deg,#ffffff 0%,#f5f3ff 55%,#ecfdf5 100%);border:2px solid #7c3aed;border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 8px 20px rgba(91,33,182,0.12);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px dashed #c4b5fd;">
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span style="width:24px;height:24px;border-radius:50%;background:#5f259f;color:#fff;font-weight:900;font-size:13px;display:inline-flex;align-items:center;justify-content:center;">पे</span>
+                                <div>
+                                    <div style="font-size:11px;font-weight:900;color:#4c1d95;">ऑनलाइन फीस भुगतान (UPI / PhonePe / GPay)</div>
+                                    <div style="font-size:10px;font-weight:700;color:#475569;">🏦 ${esc(db.upiBank || DEFAULT_UPI_BANK)}</div>
+                                </div>
+                            </div>
+                            <span class="badge" style="background:#5f259f;color:#fff;">ACCEPTED HERE</span>
                         </div>
-                        <button type="button" onclick="copyTextToClipboard('${esc(db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE)}', 'प्रधानाचार्य भुगतान नंबर कॉपी हो गया!')" class="btn-3d btn-green" style="padding:6px 10px;font-size:10px;white-space:nowrap;">📋 नंबर कॉपी करें</button>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div style="background:#ffffff;padding:6px;border-radius:12px;border:2px solid #5f259f;box-shadow:0 4px 10px rgba(0,0,0,0.08);flex-shrink:0;text-align:center;">
+                                <img src="${esc(normalizeDriveImgUrl(db.upiQr || DEFAULT_UPI_QR_IMG) || DEFAULT_UPI_QR_IMG)}" referrerpolicy="no-referrer" alt="UPI QR Code" style="width:96px;height:96px;object-fit:contain;display:block;border-radius:6px;">
+                                <div style="font-size:8px;font-weight:900;color:#5f259f;margin-top:2px;">SCAN &amp; PAY</div>
+                            </div>
+                            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
+                                <div style="background:#ffffff;border:1px solid #ddd6fe;border-radius:10px;padding:6px 8px;">
+                                    <div style="font-size:9px;font-weight:800;color:#64748b;">UPI ID:</div>
+                                    <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
+                                        <span style="font-size:12px;font-weight:900;color:#0f172a;word-break:break-all;">${esc(db.upiId || DEFAULT_UPI_ID)}</span>
+                                        <button type="button" onclick="copyTextToClipboard('${esc(db.upiId || DEFAULT_UPI_ID)}', 'UPI ID कॉपी हो गई!')" class="btn-3d btn-navy" style="padding:4px 8px;font-size:9px;flex-shrink:0;">📋 कॉपी</button>
+                                    </div>
+                                </div>
+                                <div style="background:#ffffff;border:1px solid #bbf7d0;border-radius:10px;padding:6px 8px;">
+                                    <div style="font-size:9px;font-weight:800;color:#64748b;">मोबाइल नंबर (UPI / PhonePe):</div>
+                                    <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
+                                        <span style="font-size:12px;font-weight:900;color:#065f46;">+91 ${esc(db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE)}</span>
+                                        <button type="button" onclick="copyTextToClipboard('${esc(db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE)}', 'भुगतान नंबर कॉपी हो गया!')" class="btn-3d btn-green" style="padding:4px 8px;font-size:9px;flex-shrink:0;">📋 कॉपी</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
+                            <a href="upi://pay?pa=${encodeURIComponent(db.upiId || DEFAULT_UPI_ID)}&pn=${encodeURIComponent(DEFAULT_UPI_NAME)}&cu=INR${due > 0 ? '&am=' + due : ''}" class="btn-3d" style="background:linear-gradient(135deg,#6d28d9,#4c1d95);color:#fff;padding:8px 6px;font-size:11px;box-shadow:0 3px 0 #3b0764;">
+                                ⚡ सीधे UPI से भरें
+                            </a>
+                            <button type="button" onclick="downloadOfficialUpiQr()" class="btn-3d btn-light" style="padding:8px 6px;font-size:11px;">
+                                ⬇️ QR डाउनलोड करें
+                            </button>
+                        </div>
                     </div>
                     <div style="display:flex;flex-direction:column;gap:5px;">
                         ${feeHistoryHtml}
@@ -4022,9 +4168,345 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         return { dataUrl: bestDataUrl, kb: Math.max(1, Math.round(finalBytes / 1024)) };
     }
 
-    function processUploadImg(event, kind) {
+
+    // =========================================================================
+    // INTERACTIVE IMAGE CROPPER & ROTATOR (STUDENTS, AADHAAR, TEACHERS, QR, LOGO)
+    // =========================================================================
+    let cropperState = {
+        img: null,
+        rotation: 0, // 0, 90, 180, 270
+        aspect: 'free',
+        onConfirm: null,
+        onCancel: null,
+        dispW: 0,
+        dispH: 0,
+        box: { x: 0, y: 0, w: 0, h: 0 },
+        dragMode: null,
+        startX: 0,
+        startY: 0,
+        startBox: null
+    };
+
+    function openImageCropperFromFile(file, opts = {}) {
+        return new Promise((resolve) => {
+            if (!file) { resolve(null); return; }
+            const reader = new FileReader();
+            reader.onerror = () => resolve(null);
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onerror = () => resolve(null);
+                img.onload = () => {
+                    cropperState.img = img;
+                    cropperState.rotation = 0;
+                    cropperState.aspect = opts.defaultAspect || 'free';
+                    cropperState.onConfirm = (croppedDataUrl) => resolve(croppedDataUrl);
+                    cropperState.onCancel = () => resolve(null);
+
+                    const titleEl = document.getElementById('cropperModalTitle');
+                    if (titleEl) titleEl.textContent = opts.title || '✂️ Crop & Rotate Photo';
+                    ['free', '1:1', 'idcard'].forEach(k => {
+                        const btn = document.getElementById('cropAsp-' + k);
+                        if (btn) btn.classList.toggle('active', k === cropperState.aspect);
+                    });
+
+                    openModal('photoCropperModal');
+                    requestAnimationFrame(() => renderCropperCanvas(true));
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function getRotatedSourceCanvas() {
+        const img = cropperState.img;
+        const rot = ((cropperState.rotation % 360) + 360) % 360;
+        const swap = rot === 90 || rot === 270;
+        const w = swap ? img.height : img.width;
+        const h = swap ? img.width : img.height;
+        const off = document.createElement('canvas');
+        off.width = w;
+        off.height = h;
+        const octx = off.getContext('2d');
+        octx.imageSmoothingEnabled = true;
+        octx.imageSmoothingQuality = 'high';
+        octx.translate(w / 2, h / 2);
+        octx.rotate((rot * Math.PI) / 180);
+        octx.drawImage(img, -img.width / 2, -img.height / 2);
+        return off;
+    }
+
+    function renderCropperCanvas(resetBox = false) {
+        if (!cropperState.img) return;
+        const stage = document.getElementById('cropperStage');
+        const canvas = document.getElementById('cropperCanvas');
+        if (!stage || !canvas) return;
+
+        const rotCanvas = getRotatedSourceCanvas();
+        const maxW = Math.max(240, stage.clientWidth - 16);
+        const maxH = Math.max(220, stage.clientHeight - 16);
+        const scale = Math.min(maxW / rotCanvas.width, maxH / rotCanvas.height);
+
+        const dispW = Math.max(80, Math.round(rotCanvas.width * scale));
+        const dispH = Math.max(80, Math.round(rotCanvas.height * scale));
+        canvas.width = dispW;
+        canvas.height = dispH;
+        canvas.style.width = dispW + 'px';
+        canvas.style.height = dispH + 'px';
+        cropperState.dispW = dispW;
+        cropperState.dispH = dispH;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(rotCanvas, 0, 0, dispW, dispH);
+
+        if (resetBox) {
+            applyCropperAspectPreset(cropperState.aspect);
+        } else {
+            syncCropSelectionBoxDOM();
+        }
+    }
+
+    function applyCropperAspectPreset(aspect) {
+        const dw = cropperState.dispW;
+        const dh = cropperState.dispH;
+        let bw = Math.round(dw * 0.86);
+        let bh = Math.round(dh * 0.86);
+
+        if (aspect === '1:1') {
+            const side = Math.min(bw, bh);
+            bw = side;
+            bh = side;
+        } else if (aspect === 'idcard') {
+            const ratio = 1.586;
+            if (bw / bh > ratio) {
+                bw = Math.round(bh * ratio);
+            } else {
+                bh = Math.round(bw / ratio);
+            }
+        }
+        cropperState.box = {
+            x: Math.round((dw - bw) / 2),
+            y: Math.round((dh - bh) / 2),
+            w: Math.max(40, bw),
+            h: Math.max(40, bh)
+        };
+        syncCropSelectionBoxDOM();
+    }
+
+    function setCropAspect(aspect) {
+        cropperState.aspect = aspect;
+        ['free', '1:1', 'idcard'].forEach(k => {
+            const btn = document.getElementById('cropAsp-' + k);
+            if (btn) btn.classList.toggle('active', k === aspect);
+        });
+        applyCropperAspectPreset(aspect);
+    }
+
+    function resetCropBoxFull() {
+        cropperState.aspect = 'free';
+        ['free', '1:1', 'idcard'].forEach(k => {
+            const btn = document.getElementById('cropAsp-' + k);
+            if (btn) btn.classList.toggle('active', k === 'free');
+        });
+        cropperState.box = { x: 0, y: 0, w: cropperState.dispW, h: cropperState.dispH };
+        syncCropSelectionBoxDOM();
+    }
+
+    function rotateCropperImage(deg) {
+        if (!cropperState.img) return;
+        cropperState.rotation = ((cropperState.rotation + deg) % 360 + 360) % 360;
+        renderCropperCanvas(true);
+    }
+
+    function syncCropSelectionBoxDOM() {
+        const canvas = document.getElementById('cropperCanvas');
+        const boxEl = document.getElementById('cropSelectionBox');
+        if (!canvas || !boxEl) return;
+        const b = cropperState.box;
+        boxEl.style.left = (canvas.offsetLeft + b.x) + 'px';
+        boxEl.style.top = (canvas.offsetTop + b.y) + 'px';
+        boxEl.style.width = b.w + 'px';
+        boxEl.style.height = b.h + 'px';
+    }
+
+    (function initCropperPointerEvents() {
+        const boxEl = document.getElementById('cropSelectionBox');
+        if (!boxEl) return;
+
+        function onPointerDown(e) {
+            e.preventDefault();
+            const pt = e.touches ? e.touches[0] : e;
+            const handle = e.target && e.target.getAttribute('data-handle');
+            cropperState.dragMode = handle || 'move';
+            cropperState.startX = pt.clientX;
+            cropperState.startY = pt.clientY;
+            cropperState.startBox = { ...cropperState.box };
+        }
+
+        function onPointerMove(e) {
+            if (!cropperState.dragMode || !cropperState.startBox) return;
+            e.preventDefault();
+            const pt = e.touches ? e.touches[0] : e;
+            const dx = pt.clientX - cropperState.startX;
+            const dy = pt.clientY - cropperState.startY;
+            const sb = cropperState.startBox;
+            const dw = cropperState.dispW;
+            const dh = cropperState.dispH;
+            const minSz = 44;
+            let { x, y, w, h } = sb;
+
+            if (cropperState.dragMode === 'move') {
+                x = Math.max(0, Math.min(dw - w, sb.x + dx));
+                y = Math.max(0, Math.min(dh - h, sb.y + dy));
+            } else {
+                if (cropperState.dragMode.includes('e')) {
+                    w = Math.max(minSz, Math.min(dw - sb.x, sb.w + dx));
+                }
+                if (cropperState.dragMode.includes('s')) {
+                    h = Math.max(minSz, Math.min(dh - sb.y, sb.h + dy));
+                }
+                if (cropperState.dragMode.includes('w')) {
+                    const maxLeft = sb.x + sb.w - minSz;
+                    const newX = Math.max(0, Math.min(maxLeft, sb.x + dx));
+                    w = sb.w + (sb.x - newX);
+                    x = newX;
+                }
+                if (cropperState.dragMode.includes('n')) {
+                    const maxTop = sb.y + sb.h - minSz;
+                    const newY = Math.max(0, Math.min(maxTop, sb.y + dy));
+                    h = sb.h + (sb.y - newY);
+                    y = newY;
+                }
+                if (cropperState.aspect === '1:1') {
+                    const side = Math.min(w, h, dw - x, dh - y);
+                    w = side;
+                    h = side;
+                }
+            }
+            cropperState.box = { x: Math.round(x), y: Math.round(y), w: Math.round(w), h: Math.round(h) };
+            syncCropSelectionBoxDOM();
+        }
+
+        function onPointerUp() {
+            cropperState.dragMode = null;
+        }
+
+        boxEl.addEventListener('mousedown', onPointerDown);
+        boxEl.addEventListener('touchstart', onPointerDown, { passive: false });
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove, { passive: false });
+        window.addEventListener('mouseup', onPointerUp);
+        window.addEventListener('touchend', onPointerUp);
+    })();
+
+    function confirmImageCropper() {
+        if (!cropperState.img) return;
+        const rotCanvas = getRotatedSourceCanvas();
+        const scaleX = rotCanvas.width / cropperState.dispW;
+        const scaleY = rotCanvas.height / cropperState.dispH;
+        const b = cropperState.box;
+
+        const sx = Math.max(0, Math.round(b.x * scaleX));
+        const sy = Math.max(0, Math.round(b.y * scaleY));
+        const sw = Math.max(20, Math.min(rotCanvas.width - sx, Math.round(b.w * scaleX)));
+        const sh = Math.max(20, Math.min(rotCanvas.height - sy, Math.round(b.h * scaleY)));
+
+        const out = document.createElement('canvas');
+        out.width = sw;
+        out.height = sh;
+        const octx = out.getContext('2d');
+        octx.imageSmoothingEnabled = true;
+        octx.imageSmoothingQuality = 'high';
+        octx.fillStyle = '#ffffff';
+        octx.fillRect(0, 0, sw, sh);
+        octx.drawImage(rotCanvas, sx, sy, sw, sh, 0, 0, sw, sh);
+
+        const croppedDataUrl = out.toDataURL('image/jpeg', 0.94);
+        const cb = cropperState.onConfirm;
+        cropperState.img = null;
+        closeModal('photoCropperModal');
+        if (cb) cb(croppedDataUrl);
+    }
+
+    function cancelImageCropper() {
+        const cb = cropperState.onCancel;
+        cropperState.img = null;
+        closeModal('photoCropperModal');
+        if (cb) cb();
+    }
+
+    function savePrincipalUpiSettings() {
+        if (!isCurrentUserPrincipalOrAdmin()) return;
+        const ph = (document.getElementById('inPrincipalPayPhone').value || '').replace(/\D/g, '').slice(-10);
+        const upi = (document.getElementById('inPrincipalUpiId').value || '').trim();
+        const bank = (document.getElementById('inPrincipalUpiBank').value || '').trim();
+        if (ph.length !== 10) {
+            showToast('सही 10-अंकों का मोबाइल नंबर दर्ज करें।');
+            return;
+        }
+        if (!upi || !upi.includes('@')) {
+            showToast('सही UPI ID दर्ज करें (जैसे: 91625195110@ybl)');
+            return;
+        }
+        db.principalPayPhone = ph;
+        db.upiId = upi;
+        db.upiBank = bank || DEFAULT_UPI_BANK;
+        if (!db.upiQr) db.upiQr = DEFAULT_UPI_QR_IMG;
+        saveDB();
+        showToast('✅ UPI ID, मोबाइल नंबर और QR सेव हो गया!');
+    }
+
+    async function uploadPrincipalUpiQr(event) {
+        if (!isCurrentUserPrincipalOrAdmin()) return;
         const file = event.target.files && event.target.files[0];
+        event.target.value = '';
         if (!file) return;
+        const cropped = await openImageCropperFromFile(file, {
+            title: '✂️ Crop & Rotate UPI QR Code',
+            defaultAspect: '1:1'
+        });
+        if (!cropped) return;
+
+        const img = new Image();
+        img.onload = async () => {
+            const compressed = compressImageUnder100KB(img, 'photo');
+            db.upiQr = compressed.dataUrl;
+            const prev = document.getElementById('settingsUpiQrPreview');
+            if (prev) prev.src = compressed.dataUrl;
+            showToast('UPI QR Code Google Drive में सेव हो रहा है...');
+            const driveUrl = await uploadImageToGoogleDrive(compressed.dataUrl, `upi_qr_${Date.now()}.jpg`);
+            db.upiQr = driveUrl || compressed.dataUrl;
+            if (prev) prev.src = normalizeDriveImgUrl(db.upiQr);
+            saveDB();
+            showToast('✅ नया UPI QR Code सेव और सिंक हो गया!');
+        };
+        img.src = cropped;
+    }
+
+    function downloadOfficialUpiQr() {
+        const src = normalizeDriveImgUrl(db.upiQr || DEFAULT_UPI_QR_IMG) || DEFAULT_UPI_QR_IMG;
+        const a = document.createElement('a');
+        a.href = src;
+        a.download = `BABA_Coaching_UPI_QR_${(db.upiId || DEFAULT_UPI_ID).replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast('UPI QR कोड डाउनलोड हो रहा है!');
+    }
+
+    async function processUploadImg(event, kind) {
+        const file = event.target.files && event.target.files[0];
+        event.target.value = '';
+        if (!file) return;
+
+        const isPhoto = kind === 'photo';
+        const croppedDataUrl = await openImageCropperFromFile(file, {
+            title: isPhoto ? '✂️ Crop & Rotate Student Photo' : '✂️ Crop & Rotate Aadhaar Card',
+            defaultAspect: isPhoto ? '1:1' : 'idcard'
+        });
+        if (!croppedDataUrl) return;
+
         activeStudentImgUploads++;
         updateStudentUploadUiState();
 
@@ -4037,47 +4519,37 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const stEl = document.getElementById(statusMap[kind]);
         if (stEl) stEl.textContent = '⏳ Optimizing (<100KB)...';
 
-        const reader = new FileReader();
-        reader.onerror = function () {
+        const img = new Image();
+        img.onerror = function () {
             activeStudentImgUploads = Math.max(0, activeStudentImgUploads - 1);
             updateStudentUploadUiState();
-            if (stEl) stEl.textContent = '❌ Retry';
+            if (stEl) stEl.textContent = '❌ Invalid Image';
         };
-        reader.onload = function (ev) {
-            const img = new Image();
-            img.onerror = function () {
+        img.onload = async function () {
+            try {
+                const compressed = compressImageUnder100KB(img, kind);
+                const dataUrl = compressed.dataUrl;
+                const kbLabel = compressed.kb + ' KB';
+
+                if (kind === 'photo') tempUploadedPhoto = dataUrl;
+                if (kind === 'aadhaar' || kind === 'aadhaarFront') tempUploadedAadhaar = dataUrl;
+                if (kind === 'aadhaarBack') tempUploadedAadhaarBack = dataUrl;
+                setStudentModalPreviews(tempUploadedPhoto, tempUploadedAadhaar, tempUploadedAadhaarBack, document.getElementById('inStuName').value || '👤');
+
+                showToast(`Saving photo (${kbLabel}) to Google Drive...`);
+                const driveUrl = await uploadImageToGoogleDrive(dataUrl, `${kind}_${Date.now()}.jpg`);
+                if (kind === 'photo') tempUploadedPhoto = driveUrl || dataUrl;
+                if (kind === 'aadhaar' || kind === 'aadhaarFront') tempUploadedAadhaar = driveUrl || dataUrl;
+                if (kind === 'aadhaarBack') tempUploadedAadhaarBack = driveUrl || dataUrl;
+                setStudentModalPreviews(tempUploadedPhoto, tempUploadedAadhaar, tempUploadedAadhaarBack, document.getElementById('inStuName').value || '👤');
+                if (stEl) stEl.textContent = `✅ Saved (${kbLabel})`;
+                showToast(`Photo (${kbLabel}) saved in crisp quality!`);
+            } finally {
                 activeStudentImgUploads = Math.max(0, activeStudentImgUploads - 1);
                 updateStudentUploadUiState();
-                if (stEl) stEl.textContent = '❌ Invalid Image';
-            };
-            img.onload = async function () {
-                try {
-                    const compressed = compressImageUnder100KB(img, kind);
-                    const dataUrl = compressed.dataUrl;
-                    const kbLabel = compressed.kb + ' KB';
-
-                    // Immediately store & preview local dataUrl so it never disappears
-                    if (kind === 'photo') tempUploadedPhoto = dataUrl;
-                    if (kind === 'aadhaar' || kind === 'aadhaarFront') tempUploadedAadhaar = dataUrl;
-                    if (kind === 'aadhaarBack') tempUploadedAadhaarBack = dataUrl;
-                    setStudentModalPreviews(tempUploadedPhoto, tempUploadedAadhaar, tempUploadedAadhaarBack, document.getElementById('inStuName').value || '👤');
-
-                    showToast(`Saving photo (${kbLabel}) to Google Drive...`);
-                    const driveUrl = await uploadImageToGoogleDrive(dataUrl, `${kind}_${Date.now()}.jpg`);
-                    if (kind === 'photo') tempUploadedPhoto = driveUrl || dataUrl;
-                    if (kind === 'aadhaar' || kind === 'aadhaarFront') tempUploadedAadhaar = driveUrl || dataUrl;
-                    if (kind === 'aadhaarBack') tempUploadedAadhaarBack = driveUrl || dataUrl;
-                    setStudentModalPreviews(tempUploadedPhoto, tempUploadedAadhaar, tempUploadedAadhaarBack, document.getElementById('inStuName').value || '👤');
-                    if (stEl) stEl.textContent = `✅ Saved (${kbLabel})`;
-                    showToast(`Photo (${kbLabel}) saved in crisp quality!`);
-                } finally {
-                    activeStudentImgUploads = Math.max(0, activeStudentImgUploads - 1);
-                    updateStudentUploadUiState();
-                }
-            };
-            img.src = ev.target.result;
+            }
         };
-        reader.readAsDataURL(file);
+        img.src = croppedDataUrl;
     }
 
     function saveStudent(e) {
@@ -4369,20 +4841,28 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         showToast(`${stu.name} 's fee account has been reset to 0!`);
     }
 
-    function sendFeeDueWhatsApp(stuId) {
+    async function sendFeeDueWhatsApp(stuId) {
         const stu = db.students.find(s => s.id === stuId);
         if (!stu) return;
         const cls = db.classes.find(c => c.id === stu.classId);
         const coaching = (db.branding && db.branding.title) || 'BABA COACHING CENTRE';
         const dueInfo = getStudentMonthWiseDueSummary(stu);
         const due = dueInfo.overallDue;
+        const payPhone = db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE;
+        const upiId = db.upiId || DEFAULT_UPI_ID;
+        const upiBank = db.upiBank || DEFAULT_UPI_BANK;
         const monthDetailsLine = dueInfo.lines && dueInfo.lines.length > 0
-            ? `\nMonth-wise Due Amount:\n*${dueInfo.lines.join('\n')}*`
+            ? `\n📅 महीना अनुसार बकाया:\n*${dueInfo.lines.join('\n')}*`
             : '';
 
-        const msg = `नमस्ते ${stu.parent} जी,\n*${coaching}* की ओर से फीस बकाया सूचना (Fee Reminder):\n-------------------------\nछात्र का नाम: *${stu.name}*\nकक्षा / रोल नं: ${cls ? cls.name : ''} (#${stu.roll})\nकुल फीस: ₹${stu.feeTotal}\nजमा फीस: ₹${stu.feePaid}\nशेष बकाया (Pending Due): *₹${due}*${monthDetailsLine}\n-------------------------\nकृपया बकाया फीस शीघ्र जमा करने की कृपा करें।\nधन्यवाद - *${coaching}*`;
+        const baseMsg = `नमस्ते ${stu.parent} जी,\n*${coaching}* की ओर से फीस बकाया सूचना एवं डिजिटल रसीद:\n-------------------------\n👨‍🎓 छात्र का नाम: *${stu.name}*\n🏫 कक्षा / रोल नं: *${cls ? cls.name : ''} (#${stu.roll})*\n💰 कुल फीस: *₹${stu.feeTotal}*\n✅ जमा फीस: *₹${stu.feePaid}*\n⏳ शेष बकाया (Pending Due): *₹${due}*${monthDetailsLine}\n-------------------------\n💳 *ऑनलाइन भुगतान (UPI / PhonePe / GPay):*\n🆔 UPI ID: *${upiId}*\n📱 मोबाइल नंबर: *+91 ${payPhone}*\n🏦 बैंक: ${upiBank}\n-------------------------\nकृपया बकाया फीस शीघ्र जमा करें।\nधन्यवाद - *${coaching}*`;
 
-        window.open(getPersonalWhatsAppLink(stu.phone, msg), '_blank');
+        const pngData = await createFeeReceiptPngBlob(stu.id);
+        if (pngData && getWebAppUrl()) {
+            await sharePngToParentWhatsApp(pngData.blob, pngData.filename, stu.phone, baseMsg, stu.parent);
+        } else {
+            window.open(getPersonalWhatsAppLink(stu.phone, baseMsg), '_blank');
+        }
     }
 
     function openFeeDueQueueModal() {
@@ -4650,6 +5130,15 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                     <div style="display:flex;justify-content:space-between;color:#059669;font-size:14px;"><span>जमा फीस:</span><strong>₹${stu.feePaid}</strong></div>
                     <div style="display:flex;justify-content:space-between;color:${due > 0 ? '#c62828' : '#059669'};font-size:14px;"><span>बाकी फीस:</span><strong>${due > 0 ? `₹${due} (बाकी)` : '₹0 (पूर्ण जमा)'}</strong></div>
                     ${monthDuePreviewRow}
+                    <div style="margin-top:6px;background:linear-gradient(135deg,#f5f3ff,#ecfdf5);border:1.5px solid #7c3aed;border-radius:12px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:-apple-system,sans-serif;">
+                        <div style="font-size:11px;line-height:1.45;">
+                            <div style="font-weight:900;color:#4c1d95;">💳 ऑनलाइन फीस भुगतान (UPI / PhonePe)</div>
+                            <div style="color:#0f172a;font-weight:800;">UPI ID: <span style="color:#5f259f;">${esc(db.upiId || DEFAULT_UPI_ID)}</span></div>
+                            <div style="color:#065f46;font-weight:800;">मोबाइल नंबर: +91 ${esc(db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE)}</div>
+                            <div style="font-size:9px;color:#64748b;font-weight:700;">🏦 ${esc(db.upiBank || DEFAULT_UPI_BANK)}</div>
+                        </div>
+                        <img src="${esc(normalizeDriveImgUrl(db.upiQr || DEFAULT_UPI_QR_IMG) || DEFAULT_UPI_QR_IMG)}" referrerpolicy="no-referrer" alt="UPI QR" style="width:66px;height:66px;object-fit:contain;border-radius:8px;border:1.5px solid #5f259f;background:#fff;padding:2px;flex-shrink:0;">
+                    </div>
                 </div>
             </div>
         ` : `
@@ -4678,6 +5167,15 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                     <div style="display:flex;justify-content:space-between;color:#059669;font-size:14px;"><span>Total Paid Fee:</span><strong>₹${stu.feePaid}</strong></div>
                     <div style="display:flex;justify-content:space-between;color:${due > 0 ? '#c62828' : '#059669'};font-size:14px;"><span>Balance Due:</span><strong>${due > 0 ? `₹${due} (DUE)` : '₹0 (PAID)'}</strong></div>
                     ${monthDuePreviewRow}
+                    <div style="margin-top:6px;background:linear-gradient(135deg,#f5f3ff,#ecfdf5);border:1.5px solid #7c3aed;border-radius:12px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:-apple-system,sans-serif;">
+                        <div style="font-size:11px;line-height:1.45;">
+                            <div style="font-weight:900;color:#4c1d95;">💳 Online Fee Payment (UPI / PhonePe / GPay)</div>
+                            <div style="color:#0f172a;font-weight:800;">UPI ID: <span style="color:#5f259f;">${esc(db.upiId || DEFAULT_UPI_ID)}</span></div>
+                            <div style="color:#065f46;font-weight:800;">Mobile No: +91 ${esc(db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE)}</div>
+                            <div style="font-size:9px;color:#64748b;font-weight:700;">🏦 ${esc(db.upiBank || DEFAULT_UPI_BANK)}</div>
+                        </div>
+                        <img src="${esc(normalizeDriveImgUrl(db.upiQr || DEFAULT_UPI_QR_IMG) || DEFAULT_UPI_QR_IMG)}" referrerpolicy="no-referrer" alt="UPI QR" style="width:66px;height:66px;object-fit:contain;border-radius:8px;border:1.5px solid #5f259f;background:#fff;padding:2px;flex-shrink:0;">
+                    </div>
                 </div>
             </div>
         `;
@@ -4698,7 +5196,11 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 जमा फीस: *₹${stu.feePaid || 0}*
 बाकी फीस: *₹${due}*${monthDueCaptionLine}
 
-रसीद देखने के लिए नीचे दिए गए लिंक पर क्लिक करें।
+💳 *ऑनलाइन भुगतान (UPI / PhonePe / GPay):*
+🆔 UPI ID: *${db.upiId || DEFAULT_UPI_ID}*
+📱 मोबाइल नंबर: *+91 ${db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE}*
+
+रसीद और QR देखने के लिए नीचे दिए गए लिंक पर क्लिक करें।
 
 धन्यवाद!
 *${coaching}*`;
@@ -5098,7 +5600,8 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             const rollFormatted = String(stu.roll || '').padStart(2, '0');
 
             const extraLinesCount = (due > 0 && dueInfo.lines) ? dueInfo.lines.length : 0;
-            const W = 1520, H = 1240 + (extraLinesCount > 0 ? (extraLinesCount * 46 + 40) : 0);
+            const upiBoxHeight = 290;
+            const W = 1520, H = 1240 + (extraLinesCount > 0 ? (extraLinesCount * 46 + 40) : 0) + upiBoxHeight;
             const canvas = document.createElement('canvas');
             canvas.width = W; canvas.height = H;
             const ctx = canvas.getContext('2d');
@@ -5222,6 +5725,48 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 dueInfo.lines.forEach((lineStr, idx) => {
                     ctx.fillText(lineStr, W - 96, y + (idx * 46));
                 });
+                y += (dueInfo.lines.length - 1) * 46;
+            }
+
+            // Draw UPI ID, Mobile Number & QR Payment Section at bottom of PNG Receipt
+            const boxY = y + 54;
+            const boxH = 236;
+            ctx.fillStyle = '#f5f3ff';
+            drawRoundRect(ctx, 84, boxY, W - 168, boxH, 28);
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#6d28d9';
+            ctx.stroke();
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#4c1d95';
+            ctx.font = '900 32px Arial, sans-serif';
+            ctx.fillText('ONLINE FEE PAYMENT (UPI / PHONEPE / GPAY)', 122, boxY + 54);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.font = '800 34px Arial, sans-serif';
+            ctx.fillText('UPI ID: ' + (db.upiId || DEFAULT_UPI_ID), 122, boxY + 108);
+
+            ctx.fillStyle = '#065f46';
+            ctx.font = '800 32px Arial, sans-serif';
+            ctx.fillText('Mobile No: +91 ' + (db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE), 122, boxY + 158);
+
+            ctx.fillStyle = '#475569';
+            ctx.font = '700 24px Arial, sans-serif';
+            ctx.fillText('Bank: ' + (db.upiBank || DEFAULT_UPI_BANK), 122, boxY + 202);
+
+            const qrImgObj = await loadSafeImageForCanvas(db.upiQr || DEFAULT_UPI_QR_IMG);
+            if (qrImgObj) {
+                const qSize = 186;
+                const qX = W - 122 - qSize;
+                const qY = boxY + 25;
+                ctx.fillStyle = '#ffffff';
+                drawRoundRect(ctx, qX - 8, qY - 8, qSize + 16, qSize + 16, 16);
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#5f259f';
+                ctx.stroke();
+                ctx.drawImage(qrImgObj, qX, qY, qSize, qSize);
             }
 
             canvas.toBlob((blob) => resolve({
@@ -5474,33 +6019,32 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         }
     }
 
-    function uploadPrincipalPhoto(event) {
+    async function uploadPrincipalPhoto(event) {
         if (!isCurrentUserPrincipalOrAdmin()) return;
-        const file = event.target.files[0];
+        const file = event.target.files && event.target.files[0];
+        event.target.value = '';
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            const img = new Image();
-            img.onload = async function () {
-                const canvas = document.createElement('canvas');
-                const scale = Math.min(1, 480 / img.width);
-                canvas.width = img.width * scale;
-                canvas.height = img.height * scale;
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                if (!db.principalProfile) db.principalProfile = { name: 'Satyanand Sir', subject: 'Principal & Director', photo: '' };
-                db.principalProfile.photo = dataUrl;
-                renderPrincipalProfileSettings();
-                showToast('प्रधानाचार्य का फ़ोटो Google Drive में अपलोड हो रहा है...');
-                const driveUrl = await uploadImageToGoogleDrive(dataUrl, `principal_${Date.now()}.jpg`);
-                db.principalProfile.photo = driveUrl;
-                saveDB();
-                renderPrincipalProfileSettings();
-                showToast('प्रधानाचार्य का फ़ोटो सेव और सिंक हो गया!');
-            };
-            img.src = ev.target.result;
+        const cropped = await openImageCropperFromFile(file, {
+            title: '✂️ Crop & Rotate Principal Photo',
+            defaultAspect: '1:1'
+        });
+        if (!cropped) return;
+
+        const img = new Image();
+        img.onload = async function () {
+            const compressed = compressImageUnder100KB(img, 'photo');
+            const dataUrl = compressed.dataUrl;
+            if (!db.principalProfile) db.principalProfile = { name: 'Satyanand Sir', subject: 'Principal & Director', photo: '' };
+            db.principalProfile.photo = dataUrl;
+            renderPrincipalProfileSettings();
+            showToast('प्रधानाचार्य का फ़ोटो Google Drive में अपलोड हो रहा है...');
+            const driveUrl = await uploadImageToGoogleDrive(dataUrl, `principal_${Date.now()}.jpg`);
+            db.principalProfile.photo = driveUrl;
+            saveDB();
+            renderPrincipalProfileSettings();
+            showToast('प्रधानाचार्य का फ़ोटो सेव और सिंक हो गया!');
         };
-        reader.readAsDataURL(file);
+        img.src = cropped;
     }
 
     function savePrincipalProfileDetails() {
@@ -5514,43 +6058,41 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         showToast('प्रधानाचार्य प्रोफ़ाइल सेव और सिंक हो गई!');
     }
 
-    function processTeacherPhotoUpload(event) {
-        const file = event.target.files[0];
+    async function processTeacherPhotoUpload(event) {
+        const file = event.target.files && event.target.files[0];
+        event.target.value = '';
         if (!file) return;
+        const cropped = await openImageCropperFromFile(file, {
+            title: '✂️ Crop & Rotate Teacher Photo',
+            defaultAspect: '1:1'
+        });
+        if (!cropped) return;
+
         isUploadingTeacherPhoto = true;
         const saveBtn = document.querySelector('#addTeacherModal button[type="submit"]');
         if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '⏳ फ़ोटो अपलोड हो रहा है...'; }
 
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            const img = new Image();
-            img.onload = async function () {
-                const canvas = document.createElement('canvas');
-                const scale = Math.min(1, 480 / img.width);
-                canvas.width = img.width * scale;
-                canvas.height = img.height * scale;
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const img = new Image();
+        img.onload = async function () {
+            const compressed = compressImageUnder100KB(img, 'photo');
+            const dataUrl = compressed.dataUrl;
 
-                // Show immediate preview right away
-                tempUploadedTeacherPhoto = dataUrl;
-                const row = document.getElementById('tchPhotoPreviewRow');
-                const pImg = document.getElementById('tchPhotoPreviewImg');
-                if (pImg) pImg.src = dataUrl;
-                if (row) row.classList.remove('hidden');
+            tempUploadedTeacherPhoto = dataUrl;
+            const row = document.getElementById('tchPhotoPreviewRow');
+            const pImg = document.getElementById('tchPhotoPreviewImg');
+            if (pImg) pImg.src = dataUrl;
+            if (row) row.classList.remove('hidden');
 
-                showToast('शिक्षक का फ़ोटो Google Drive में अपलोड हो रहा है...');
-                const driveUrl = await uploadImageToGoogleDrive(dataUrl, `teacher_${Date.now()}.jpg`);
-                tempUploadedTeacherPhoto = driveUrl;
-                if (pImg) pImg.src = normalizeDriveImgUrl(driveUrl);
+            showToast('शिक्षक का फ़ोटो Google Drive में अपलोड हो रहा है...');
+            const driveUrl = await uploadImageToGoogleDrive(dataUrl, `teacher_${Date.now()}.jpg`);
+            tempUploadedTeacherPhoto = driveUrl;
+            if (pImg) pImg.src = normalizeDriveImgUrl(driveUrl);
 
-                isUploadingTeacherPhoto = false;
-                if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = '💾 Save Teacher & Sync'; }
-                showToast('Teacher photo ready!');
-            };
-            img.src = ev.target.result;
+            isUploadingTeacherPhoto = false;
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = '💾 Save Teacher & Sync'; }
+            showToast('Teacher photo ready!');
         };
-        reader.readAsDataURL(file);
+        img.src = cropped;
     }
 
     function openAddTeacherModal() {
@@ -5840,23 +6382,25 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         r.readAsText(file);
     }
 
-    function uploadCustomBrandLogo(e) {
+    async function uploadCustomBrandLogo(e) {
         if (!isCurrentUserPrincipalOrAdmin()) {
             showToast('लोगो संपादित करने का अधिकार केवल प्रधानाचार्य या एडमिन शिक्षक को है!');
             return;
         }
-        const file = e.target.files[0];
+        const file = e.target.files && e.target.files[0];
+        e.target.value = '';
         if (!file) return;
-        const r = new FileReader();
-        r.onload = async function (ev) {
-            showToast('Uploading logo to Google Drive...');
-            const driveUrl = await uploadImageToGoogleDrive(ev.target.result, `logo_${Date.now()}.png`);
-            db.branding.customLogo = driveUrl;
-            saveDB();
-            renderBrandMounts();
-            showToast('Custom logo saved to Google Drive!');
-        };
-        r.readAsDataURL(file);
+        const cropped = await openImageCropperFromFile(file, {
+            title: '✂️ Crop & Rotate Coaching Logo',
+            defaultAspect: '1:1'
+        });
+        if (!cropped) return;
+        showToast('Uploading logo to Google Drive...');
+        const driveUrl = await uploadImageToGoogleDrive(cropped, `logo_${Date.now()}.png`);
+        db.branding.customLogo = driveUrl;
+        saveDB();
+        renderBrandMounts();
+        showToast('Custom logo saved to Google Drive!');
     }
 
     function resetOfficialBabaLogo() {
