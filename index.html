@@ -456,17 +456,17 @@
             <form onsubmit="handleRoleSignIn(event)" style="display: flex; flex-direction: column; gap: 10px;">
                 <div>
                     <label id="loginUserLbl" class="lbl">Principal Mobile / Email</label>
-                    <input type="text" id="loginUserIn" class="input-3d" value="Satyanand916251@gmail.com" placeholder="मोबाइल नंबर या ईमेल" autocomplete="username" required>
+                    <input type="text" id="loginUserIn" class="input-3d" value="" placeholder="Enter mobile number or email" autocomplete="username" required>
                 </div>
                 <div>
                     <label id="loginPassLbl" class="lbl">Password / PIN</label>
                     <div style="position: relative;">
-                        <input type="password" id="loginPinIn" class="input-3d" value="" placeholder="पासवर्ड दर्ज करें" autocomplete="current-password" required style="padding-right: 44px;">
+                        <input type="password" id="loginPinIn" class="input-3d" value="" placeholder="Enter password" autocomplete="current-password" required style="padding-right: 44px;">
                         <button type="button" onclick="toggleLoginPassVis()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 15px; cursor: pointer;" title="Show/Hide Password">👁️</button>
                     </div>
                 </div>
                 <div id="parentSetupBar" class="hidden" style="display: flex; justify-content: space-between; align-items: center; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 10px; border-radius: 10px;">
-                    <span style="font-size: 11px; color: #166534; font-weight: 700;">नया पासवर्ड बनाएं।</span>
+                    <span style="font-size: 11px; color: #166534; font-weight: 700;">Create a new password.</span>
                     <button type="button" onclick="openParentSetPasswordModal()" class="btn-3d btn-green" style="padding: 5px 9px; font-size: 10px;">
                         🔑 Create / Reset Password
                     </button>
@@ -572,7 +572,7 @@
                         </button>
                     </div>
                     <button type="button" onclick="clearClassAttendanceForDate()" class="btn-3d btn-red principal-only" style="width:100%; padding: 7px 8px; font-size: 11px;">
-                        🗑️ Clear Today's Attendance (इस तारीख़ की उपस्थिति हटाएं)
+                        🗑️ Clear Today's Attendance
                     </button>
                 </div>
 
@@ -612,9 +612,14 @@
                         <div id="feeDueSum" style="font-size: 20px; font-weight: 900; color: #c62828;">₹0</div>
                     </div>
                 </div>
-                <button type="button" onclick="openFeeDueQueueModal()" class="btn-3d btn-gold" style="width: 100%; padding: 10px; font-size: 12px;">
-                    📲 Send Fee Due Alerts on WhatsApp (<span id="feeDueCountBadge">0</span> Pending)
-                </button>
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px;">
+                    <button type="button" onclick="openFeeDueQueueModal()" class="btn-3d btn-gold" style="padding: 10px 8px; font-size: 11px;">
+                        📲 Fee Due Alerts (<span id="feeDueCountBadge">0</span> Pending)
+                    </button>
+                    <button type="button" onclick="resetAllStudentsFeesToZero()" class="btn-3d btn-red principal-only" style="padding: 10px 10px; font-size: 11px; white-space: nowrap;" title="Reset all students fee account to 0 (Start fresh from December)">
+                        🔄 Reset All Fees (0)
+                    </button>
+                </div>
                 <div id="feeCardsMount" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </section>
 
@@ -651,7 +656,7 @@
                 <div class="card-3d principal-only">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <div style="font-size: 14px; font-weight: 900; color: #0e336b;">🎓 Principal Profile &amp; Photo</div>
-                        <span class="badge badge-amber">अभिभावकों को दिखेगा</span>
+                        <span class="badge badge-amber">Visible to Parents</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
                         <div id="settingsPrincipalPhotoPreview" style="flex-shrink: 0;"></div>
@@ -745,7 +750,7 @@
                         </div>
                         <hr style="border:none;border-top:1px dashed #cbd5e1;margin:2px 0;">
                         <div class="principal-only">
-                            <label class="lbl">ऑनलाइन फीस भुगतान मोबाइल नंबर (अभिभावकों को दिखेगा)</label>
+                            <label class="lbl">Principal Mobile Number (Login &amp; Online Fee Payment)</label>
                             <div style="display: flex; gap: 6px;">
                                 <input type="tel" id="inPrincipalPayPhone" class="input-3d" placeholder="e.g. 9162510000" maxlength="15" style="font-size: 12px;">
                                 <button type="button" onclick="updatePrincipalPayPhone()" class="btn-3d btn-green" style="padding: 8px 12px; font-size: 11px; white-space: nowrap;">Save No.</button>
@@ -755,7 +760,7 @@
                         <div class="principal-only">
                             <label class="lbl">Principal Login Password</label>
                             <div style="display: flex; gap: 6px;">
-                                <input type="text" id="inPrincipalPassChange" class="input-3d" placeholder="नया प्रधानाचार्य पासवर्ड" style="font-size: 12px;">
+                                <input type="text" id="inPrincipalPassChange" class="input-3d" placeholder="New Principal password" style="font-size: 12px;">
                                 <button type="button" onclick="updatePrincipalPassword()" class="btn-3d btn-gold" style="padding: 8px 12px; font-size: 11px; white-space: nowrap;">Update</button>
                             </div>
                         </div>
@@ -858,25 +863,76 @@
                     <input type="text" id="inStuAadhaar" class="input-3d" placeholder="XXXX-XXXX-1234">
                 </div>
                 <div>
-                    <label class="lbl">Monthly Fee (₹)</label>
-                    <input type="number" id="inStuFee" class="input-3d" value="1500">
+                    <label class="lbl">Previous Due / Old Balance (₹) (Default 0)</label>
+                    <input type="number" id="inStuFee" class="input-3d" value="0" min="0">
                 </div>
             </div>
             <div>
                 <label class="lbl">Parent Portal Login Password (Optional)</label>
-                <input type="text" id="inStuParentPass" class="input-3d" placeholder="अभिभावक अपना पासवर्ड स्वयं भी बना सकते हैं">
+                <input type="text" id="inStuParentPass" class="input-3d" placeholder="Parents can also create their own password">
             </div>
+
+            <!-- Student Photo: Live Camera + Album -->
+            <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label class="lbl" style="margin: 0; color: #0e336b;">📷 Student Photo</label>
+                    <span id="stuPhotoUploadStatus" style="font-size: 10px; font-weight: 800; color: #64748b;"></span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div id="stuPhotoCirclePreview" style="width: 56px; height: 56px; border-radius: 50%; background: #dbeafe; color: #0e336b; border: 2px solid #0e336b; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; overflow: hidden; flex-shrink: 0;">👤</div>
+                    <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                        <label class="btn-3d btn-navy" style="padding: 8px 6px; font-size: 11px; cursor: pointer;">
+                            📸 Live Camera
+                            <input type="file" accept="image/*" capture="user" onchange="processUploadImg(event, 'photo')" class="hidden">
+                        </label>
+                        <label class="btn-3d btn-light" style="padding: 8px 6px; font-size: 11px; cursor: pointer;">
+                            🖼️ Album / Gallery
+                            <input type="file" accept="image/*" onchange="processUploadImg(event, 'photo')" class="hidden">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aadhaar Card Front & Back: Live Camera + Album -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <div>
-                    <label class="lbl">📷 Student Photo</label>
-                    <input type="file" accept="image/*" onchange="processUploadImg(event, 'photo')" class="input-3d" style="padding: 7px; font-size: 11px;">
+                <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label class="lbl" style="margin: 0; font-size: 10px; color: #0e336b;">🪪 Aadhaar Front</label>
+                        <span id="stuAadhaarFrontStatus" style="font-size: 9px; font-weight: 800; color: #059669;"></span>
+                    </div>
+                    <div id="stuAadhaarFrontPreview" style="height: 62px; border-radius: 10px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #64748b; overflow: hidden;">Front Side</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                        <label class="btn-3d btn-green" style="padding: 6px 4px; font-size: 10px; cursor: pointer;">
+                            📸 Live
+                            <input type="file" accept="image/*" capture="environment" onchange="processUploadImg(event, 'aadhaarFront')" class="hidden">
+                        </label>
+                        <label class="btn-3d btn-light" style="padding: 6px 4px; font-size: 10px; cursor: pointer;">
+                            🖼️ Album
+                            <input type="file" accept="image/*" onchange="processUploadImg(event, 'aadhaarFront')" class="hidden">
+                        </label>
+                    </div>
                 </div>
-                <div>
-                    <label class="lbl">🪪 Aadhaar Card Image</label>
-                    <input type="file" accept="image/*" onchange="processUploadImg(event, 'aadhaar')" class="input-3d" style="padding: 7px; font-size: 11px;">
+
+                <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label class="lbl" style="margin: 0; font-size: 10px; color: #0e336b;">🪪 Aadhaar Back</label>
+                        <span id="stuAadhaarBackStatus" style="font-size: 9px; font-weight: 800; color: #059669;"></span>
+                    </div>
+                    <div id="stuAadhaarBackPreview" style="height: 62px; border-radius: 10px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #64748b; overflow: hidden;">Back Side</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                        <label class="btn-3d btn-green" style="padding: 6px 4px; font-size: 10px; cursor: pointer;">
+                            📸 Live
+                            <input type="file" accept="image/*" capture="environment" onchange="processUploadImg(event, 'aadhaarBack')" class="hidden">
+                        </label>
+                        <label class="btn-3d btn-light" style="padding: 6px 4px; font-size: 10px; cursor: pointer;">
+                            🖼️ Album
+                            <input type="file" accept="image/*" onchange="processUploadImg(event, 'aadhaarBack')" class="hidden">
+                        </label>
+                    </div>
                 </div>
             </div>
-            <button type="submit" class="btn-3d btn-navy" style="width: 100%; padding: 12px; font-size: 14px; margin-top: 4px;">
+
+            <button type="submit" id="btnSaveStudentSubmit" class="btn-3d btn-navy" style="width: 100%; padding: 12px; font-size: 14px; margin-top: 4px;">
                 💾 Save Student
             </button>
         </form>
@@ -888,7 +944,7 @@
     <div class="modal-sheet">
         <div class="sheet-bar"></div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h3 style="font-size: 16px; font-weight: 900;">🪪 Student ID &amp; Aadhaar Card</h3>
+            <h3 id="idCardModalHeading" style="font-size: 16px; font-weight: 900;">👤 Student Full Profile &amp; Aadhaar Card</h3>
             <button type="button" onclick="closeModal('idCardModal')" class="btn-3d btn-light" style="padding: 5px 10px;">✕</button>
         </div>
         <div id="idCardBody"></div>
@@ -951,31 +1007,68 @@
     </div>
 </div>
 
-<!-- 4B. Add Next Month Fee Modal -->
+<!-- 4B. Add / Remove Monthly Fee & Previous Due Modal -->
 <div id="addMonthFeeModal" class="modal-overlay hidden">
     <div class="modal-sheet">
         <div class="sheet-bar"></div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h3 style="font-size: 16px; font-weight: 900;">📅 फीस महीना जोड़ें (नए महीने की फीस जोड़ें)</h3>
+            <h3 style="font-size: 16px; font-weight: 900;">📅 Add / Remove Fee &amp; Previous Due</h3>
             <button type="button" onclick="closeModal('addMonthFeeModal')" class="btn-3d btn-light" style="padding: 5px 10px;">✕</button>
         </div>
         <form onsubmit="submitAddMonthFee(event)" style="display: flex; flex-direction: column; gap: 10px;">
             <input type="hidden" id="addMonthStuId">
             <div id="addMonthStuBanner" style="background: #eff6ff; color: #0e336b; padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 800;"></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+                <label class="lbl">Select Fee Type *</label>
+                <select id="inAddFeeKind" onchange="onAddFeeKindChange()" class="input-3d">
+                    <option value="month">📅 Add Monthly Fee (Starts from December)</option>
+                    <option value="old_due">📌 Add Previous Due (Old Balance with Month)</option>
+                </select>
+            </div>
+            <div id="addFeeOldMonthRow" class="hidden" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <div>
-                    <label class="lbl">Select Fee Month *</label>
-                    <input type="month" id="inAddFeeMonth" class="input-3d" required>
+                    <label class="lbl">Select Due Month *</label>
+                    <select id="inAddFeeOldMonthSelect" onchange="onOldDueMonthSelectChange()" class="input-3d">
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November" selected>November</option>
+                        <option value="December">December</option>
+                    </select>
                 </div>
                 <div>
-                    <label class="lbl">Monthly Fee Amount (₹) *</label>
-                    <input type="number" id="inAddFeeMonthAmt" class="input-3d" required min="1">
+                    <label class="lbl">Previous Due Label *</label>
+                    <input type="text" id="inAddFeeOldLabel" class="input-3d" value="November" placeholder="e.g. November">
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div id="addFeeMonthFieldWrap">
+                    <label class="lbl">Select Month *</label>
+                    <input type="month" id="inAddFeeMonth" class="input-3d" value="2026-12">
+                </div>
+                <div>
+                    <label class="lbl">Amount (₹) *</label>
+                    <input type="number" id="inAddFeeMonthAmt" class="input-3d" required min="1" placeholder="e.g. 500">
                 </div>
             </div>
             <button type="submit" class="btn-3d btn-green" style="width: 100%; padding: 12px; font-size: 14px;">
-                ➕ Add Month Fee
+                ➕ Add Fee / Previous Due
             </button>
         </form>
+
+        <div style="margin-top: 14px; border-top: 1.5px dashed #cbd5e1; padding-top: 10px;">
+            <div style="font-size: 11px; font-weight: 900; color: #475569; text-transform: uppercase; margin-bottom: 6px;">
+                📋 Added Fee List (Remove any wrong entry here)
+            </div>
+            <div id="stuFeeEntriesManageMount" style="display: flex; flex-direction: column; gap: 6px;"></div>
+        </div>
     </div>
 </div>
 
@@ -1168,7 +1261,7 @@
                 </div>
                 <div>
                     <label class="lbl">Login Password / PIN *</label>
-                    <input type="text" id="inTchTempPass" class="input-3d" required minlength="4" placeholder="जैसे: 1234 या Raj@123">
+                    <input type="text" id="inTchTempPass" class="input-3d" required minlength="4" placeholder="e.g. 1234 or Raj@123">
                 </div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: end;">
@@ -1580,7 +1673,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 </div>
 
 
-<!-- 13. Parent Apply Leave Modal (अभिभावक छुट्टी आवेदन + आवाज़ संदेश) -->
+<!-- 13. Parent Apply Leave Modal (अभिभावक छुट्टी आवेदन — केवल लिखकर भेजें) -->
 <div id="parentLeaveModal" class="modal-overlay hidden">
     <div class="modal-sheet">
         <div class="sheet-bar"></div>
@@ -1602,36 +1695,8 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 </div>
             </div>
             <div>
-                <label class="lbl">छुट्टी का कारण / संदेश (लिखें या नीचे बोलकर रिकॉर्ड करें)</label>
-                <div style="display:flex;gap:7px;align-items:stretch;">
-                    <textarea id="inParentLeaveMsg" rows="3" class="input-3d" style="flex:1;min-width:0;" placeholder="उदाहरण: बुखार होने के कारण मेरा बच्चा आज कोचिंग नहीं आ पाएगा।"></textarea>
-                    <button type="button" id="btnInlineLeaveMic" onclick="toggleParentVoiceFromMic()" class="btn-3d btn-green" title="आवाज़ रिकॉर्ड करें" aria-label="आवाज़ रिकॉर्ड करें" style="width:54px;min-width:54px;padding:8px;font-size:23px;display:flex;align-items:center;justify-content:center;">🎙️</button>
-                </div>
-                <div style="font-size:10px;color:#64748b;margin-top:4px;">माइक दबाकर बोलें, फिर दोबारा दबाकर रिकॉर्डिंग रोकें। चाहें तो लिखकर भी भेज सकते हैं।</div>
-            </div>
-
-            <!-- Voice Message Recorder Box -->
-            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-size: 11px; font-weight: 900; color: #166534;">🎙️ आवाज़ में संदेश</span>
-                    <span id="voiceRecTimer" style="font-size: 11px; font-weight: 800; color: #dc2626;"></span>
-                </div>
-                <div id="voiceRecControls" style="display: flex; gap: 8px; align-items: center;">
-                    <button type="button" id="btnStartVoiceRec" onclick="startParentVoiceRecording()" class="btn-3d btn-green" style="flex: 1; padding: 9px 10px; font-size: 12px;">
-                        🎙️ आवाज़ रिकॉर्ड करें
-                    </button>
-                    <button type="button" id="btnStopVoiceRec" onclick="stopParentVoiceRecording()" class="btn-3d btn-red hidden" style="flex: 1; padding: 9px 10px; font-size: 12px;">
-                        ⏹️ रिकॉर्डिंग रोकें
-                    </button>
-                </div>
-                <input type="file" id="parentVoiceFileInput" accept="audio/*" capture="user" style="display:none" onchange="handleParentVoiceFile(this)">
-                <button type="button" id="btnChooseVoiceFile" onclick="openParentVoiceFilePicker()" class="btn-3d btn-light" style="width:100%;padding:8px 10px;font-size:11px;margin-top:6px;">📁 फ़ोन से आवाज़ रिकॉर्ड करें / ऑडियो चुनें</button>
-                <div id="voicePreviewBox" class="hidden" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
-                    <audio id="parentVoicePreviewAudio" controls style="width: 100%; height: 36px;"></audio>
-                    <button type="button" onclick="clearParentVoiceRecording()" class="btn-3d btn-light" style="padding: 6px 10px; font-size: 11px; color: #dc2626;">
-                        🗑️ रिकॉर्डिंग हटाएं (दोबारा रिकॉर्ड करें)
-                    </button>
-                </div>
+                <label class="lbl">छुट्टी का कारण / संदेश लिखें *</label>
+                <textarea id="inParentLeaveMsg" rows="4" class="input-3d" required placeholder="उदाहरण: बुखार होने के कारण मेरा बच्चा आज कोचिंग नहीं आ पाएगा।"></textarea>
             </div>
 
             <button type="submit" id="btnSubmitParentLeave" class="btn-3d btn-navy" style="width: 100%; padding: 12px; font-size: 14px;">
@@ -2165,18 +2230,18 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
         if (role === 'principal') {
             inp.type = 'text';
-            inp.value = DEFAULT_PRINCIPAL_EMAIL;
-            lbl.textContent = 'Principal Email / Mobile';
-            inp.placeholder = 'Satyanand916251@gmail.com';
-            passLbl.textContent = 'Principal Password (Default: Baba@1234)';
-            pinInp.placeholder = 'Default: Baba@1234';
+            inp.value = '';
+            lbl.textContent = 'Principal Mobile / Email';
+            inp.placeholder = 'Enter registered mobile number or email';
+            passLbl.textContent = 'Principal Password';
+            pinInp.placeholder = 'Enter password';
         } else if (role === 'teacher') {
             inp.type = 'tel';
             inp.value = '';
             lbl.textContent = 'Teacher Registered Mobile Number (10-Digit)';
-            inp.placeholder = 'केवल पंजीकृत 10-अंकों का मोबाइल नंबर';
+            inp.placeholder = 'Registered 10-digit mobile number only';
             passLbl.textContent = 'Teacher Password';
-            pinInp.placeholder = 'प्रधानाचार्य द्वारा दिया गया पासवर्ड';
+            pinInp.placeholder = 'Password provided by Principal';
         } else {
             inp.type = 'tel';
             inp.value = '';
@@ -2234,14 +2299,22 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (activeLoginTab === 'principal') {
             const cleanU = uVal.toLowerCase();
             const cleanPhone = uVal.replace(/\D/g, '').slice(-10);
-            const validId = (cleanU === DEFAULT_PRINCIPAL_EMAIL.toLowerCase() || cleanPhone === DEFAULT_PRINCIPAL_PHONE);
+            const savedPrincipalPhone = String(db.principalPayPhone || DEFAULT_PRINCIPAL_PHONE).replace(/\D/g, '').slice(-10);
+            const isEmailMatch = cleanU === DEFAULT_PRINCIPAL_EMAIL.toLowerCase();
+            const isPhoneMatch = cleanPhone.length === 10 && (cleanPhone === savedPrincipalPhone || cleanPhone === DEFAULT_PRINCIPAL_PHONE);
+            const validId = isEmailMatch || isPhoneMatch;
             const expectedPass = db.principalPass || DEFAULT_PRINCIPAL_PASS;
             if (!validId || pVal !== expectedPass) {
-                err.textContent = 'प्रधानाचार्य आईडी या पासवर्ड गलत है! (डिफ़ॉल्ट पासवर्ड: Baba@1234)';
+                err.textContent = 'प्रधानाचार्य मोबाइल नंबर / ईमेल या पासवर्ड गलत है!';
                 err.classList.remove('hidden');
                 return;
             }
-            db.currentUser = { uid: 'principal_1', role: 'principal', name: 'Satyanand Sir', email: DEFAULT_PRINCIPAL_EMAIL };
+            db.currentUser = {
+                uid: 'principal_1',
+                role: 'principal',
+                name: (db.principalProfile && db.principalProfile.name) || 'Satyanand Sir',
+                phone: savedPrincipalPhone
+            };
             saveLocalDBOnly();
             routeCurrentScreen();
             return;
@@ -2295,7 +2368,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         }
         const savedPass = db.parentPasswords && db.parentPasswords[cleanPhone];
         if (!savedPass || pVal !== savedPass) {
-            err.textContent = 'अभिभावक पासवर्ड गलत है या पहले "Create / Reset Password" से नया पासवर्ड बनाएं।';
+            err.textContent = 'अभिभावक पासवर्ड गलत है या पहले "Create / Reset Password" से Create a new password.';
             err.classList.remove('hidden');
             return;
         }
@@ -2592,9 +2665,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 </div>`;
             }).join('') || '<div style="font-size:11px;color:#64748b;padding:6px;">अभी कोई परीक्षा निर्धारित नहीं है।</div>';
 
-            const avatarHtml = stu.photo
-                ? `<img src="${stu.photo}" style="width:46px;height:46px;border-radius:14px;object-fit:cover;border:2px solid #0e336b;">`
-                : `<div style="width:46px;height:46px;border-radius:14px;background:#dbeafe;color:#0e336b;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;">${esc(stu.name[0])}</div>`;
+            const avatarHtml = renderAvatarCircle(stu.photo, (stu.name || 'S')[0], 50, '#0e336b');
 
             return `
             <div class="card-3d" style="display:flex;flex-direction:column;gap:12px;border-top:4px solid #eaa221;">
@@ -2838,8 +2909,10 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (parentMediaRecorder && parentMediaRecorder.state !== 'inactive') {
             parentMediaRecorder.stop();
         }
-        document.getElementById('btnStopVoiceRec').classList.add('hidden');
-        document.getElementById('btnStartVoiceRec').classList.remove('hidden');
+        const stopBtn = document.getElementById('btnStopVoiceRec');
+        const startBtn = document.getElementById('btnStartVoiceRec');
+        if (stopBtn) stopBtn.classList.add('hidden');
+        if (startBtn) startBtn.classList.remove('hidden');
         const inlineMic = document.getElementById('btnInlineLeaveMic');
         if (inlineMic) { inlineMic.textContent = '🎙️'; inlineMic.title = 'आवाज़ रिकॉर्ड करें'; inlineMic.setAttribute('aria-label', 'आवाज़ रिकॉर्ड करें'); inlineMic.classList.remove('btn-red'); inlineMic.classList.add('btn-green'); }
     }
@@ -2851,8 +2924,10 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         parentVoiceSeconds = 0;
         const audioEl = document.getElementById('parentVoicePreviewAudio');
         if (audioEl) { audioEl.pause(); audioEl.src = ''; }
-        document.getElementById('voicePreviewBox').classList.add('hidden');
-        document.getElementById('voiceRecTimer').textContent = '';
+        const previewBox = document.getElementById('voicePreviewBox');
+        const recTimer = document.getElementById('voiceRecTimer');
+        if (previewBox) previewBox.classList.add('hidden');
+        if (recTimer) recTimer.textContent = '';
         const fileInput = document.getElementById('parentVoiceFileInput');
         if (fileInput) fileInput.value = '';
     }
@@ -2918,7 +2993,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
         if (!fromDate) return;
         if (!reason && !parentVoiceDataUrl) {
-            showToast('कृपया छुट्टी का कारण लिखें या आवाज़ संदेश रिकॉर्ड करें!');
+            showToast('कृपया छुट्टी का कारण / संदेश लिखें!');
             return;
         }
 
@@ -3612,15 +3687,13 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
         const mount = document.getElementById('attendanceCardsMount');
         if (list.length === 0) {
-            mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;padding:24px;">इस कक्षा में कोई विद्यार्थी नहीं है। नीचे <strong>+ Student</strong> बटन दबाएं।</div>`;
+            mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;padding:24px;">No students in this class. Tap <strong>+ Student</strong> below.</div>`;
             return;
         }
 
         mount.innerHTML = list.map(stu => {
             const st = db.attendance[dt][stu.id] || '';
-            const av = stu.photo
-                ? `<img src="${stu.photo}" style="width:42px;height:42px;border-radius:14px;object-fit:cover;border:1.5px solid #cbd5e1;">`
-                : `<div style="width:42px;height:42px;border-radius:14px;background:#dbeafe;color:#0e336b;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;">${esc(stu.name[0])}</div>`;
+            const av = renderAvatarCircle(stu.photo, (stu.name || 'S')[0], 44, '#0e336b');
 
             const leaveTag = st === 'L'
                 ? `<span class="badge badge-amber" style="margin-left:4px;">📝 ON LEAVE</span>`
@@ -3772,6 +3845,45 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         showToast(`Student "${stu.name}" deleted!`);
     }
 
+    let tempUploadedAadhaarBack = '';
+    let activeStudentImgUploads = 0;
+
+    function updateStudentUploadUiState() {
+        const btn = document.getElementById('btnSaveStudentSubmit');
+        if (!btn) return;
+        if (activeStudentImgUploads > 0) {
+            btn.disabled = true;
+            btn.textContent = '⏳ Saving photo, please wait...';
+        } else {
+            btn.disabled = false;
+            btn.textContent = '💾 Save Student';
+        }
+    }
+
+    function setStudentModalPreviews(photoUrl, frontUrl, backUrl, fallbackName = '👤') {
+        const pCircle = document.getElementById('stuPhotoCirclePreview');
+        if (pCircle) {
+            const cleanP = normalizeDriveImgUrl(photoUrl);
+            pCircle.innerHTML = cleanP
+                ? `<img src="${esc(cleanP)}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;">`
+                : esc((fallbackName || '👤')[0]);
+        }
+        const fBox = document.getElementById('stuAadhaarFrontPreview');
+        if (fBox) {
+            const cleanF = normalizeDriveImgUrl(frontUrl);
+            fBox.innerHTML = cleanF
+                ? `<img src="${esc(cleanF)}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;">`
+                : 'Front Side';
+        }
+        const bBox = document.getElementById('stuAadhaarBackPreview');
+        if (bBox) {
+            const cleanB = normalizeDriveImgUrl(backUrl);
+            bBox.innerHTML = cleanB
+                ? `<img src="${esc(cleanB)}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;">`
+                : 'Back Side';
+        }
+    }
+
     function renderStudentCards() {
         const q = (document.getElementById('stuSearchBox').value || '').toLowerCase();
         const canDelete = isCurrentUserPrincipalOrAdmin();
@@ -3784,27 +3896,39 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;">No matching students found.</div>`;
             return;
         }
-        mount.innerHTML = list.map(stu => `
+        mount.innerHTML = list.map(stu => {
+            const circleAv = renderAvatarCircle(stu.photo, (stu.name || 'S')[0], 52, '#0e336b');
+            const hasFront = Boolean(stu.aadhaarFrontImg || stu.aadhaarImg);
+            const hasBack = Boolean(stu.aadhaarBackImg);
+            return `
             <div class="card-3d" style="display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">
-                    <div>
-                        <div style="font-size:15px;font-weight:900;">#${esc(stu.roll)} ${esc(stu.name)}</div>
-                        <div style="font-size:12px;color:#475569;font-weight:700;">Parent: ${esc(stu.parent)} • 📱 ${esc(stu.phone)}</div>
-                        <div style="font-size:11px;color:#64748b;font-family:monospace;">Aadhaar: ${esc(stu.aadhaar || 'Not Added')}</div>
+                <div onclick="openIdCard('${stu.id}')" style="display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                        ${circleAv}
+                        <div style="min-width:0;">
+                            <div style="font-size:15px;font-weight:900;color:#0f172a;">#${esc(stu.roll)} ${esc(stu.name)}</div>
+                            <div style="font-size:12px;color:#475569;font-weight:700;">Parent: ${esc(stu.parent)} • 📱 ${esc(stu.phone)}</div>
+                            <div style="font-size:10px;color:#0e336b;font-weight:800;margin-top:2px;">
+                                ${hasFront ? '✅ Aadhaar Front' : '⚠️ Front Missing'} • ${hasBack ? '✅ Back' : '⚠️ Back Missing'} • Tap to view full profile
+                            </div>
+                        </div>
                     </div>
-                    ${canDelete ? `<button type="button" onclick="deleteStudentRecord('${stu.id}')" class="btn-3d btn-red" style="padding:5px 9px;font-size:11px;flex-shrink:0;" title="Delete Student">🗑️</button>` : ''}
+                    ${canDelete ? `<button type="button" onclick="event.stopPropagation();deleteStudentRecord('${stu.id}')" class="btn-3d btn-red" style="padding:5px 9px;font-size:11px;flex-shrink:0;" title="Delete Student">🗑️</button>` : ''}
                 </div>
                 <div style="display:grid;grid-template-columns:${canDelete ? '1fr 1fr' : '1fr'};gap:8px;">
-                    <button type="button" onclick="openIdCard('${stu.id}')" class="btn-3d btn-navy" style="padding:8px;font-size:11px;">🪪 ID &amp; Aadhaar</button>
+                    <button type="button" onclick="openIdCard('${stu.id}')" class="btn-3d btn-navy" style="padding:8px;font-size:11px;">👤 Full Profile &amp; Aadhaar</button>
                     ${canDelete ? `<button type="button" onclick="openEditStudentModal('${stu.id}')" class="btn-3d btn-light" style="padding:8px;font-size:11px;">✏️ Edit Details</button>` : ''}
                 </div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
     }
 
     function openAddStudentModal() {
         tempUploadedPhoto = '';
         tempUploadedAadhaar = '';
+        tempUploadedAadhaarBack = '';
+        activeStudentImgUploads = 0;
+        updateStudentUploadUiState();
         document.getElementById('stuModalTitle').textContent = 'Add New Student Admission';
         document.getElementById('editStuId').value = '';
         document.getElementById('inStuName').value = '';
@@ -3812,16 +3936,24 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         document.getElementById('inStuParent').value = '';
         document.getElementById('inStuPhone').value = '';
         document.getElementById('inStuAadhaar').value = '';
-        document.getElementById('inStuFee').value = '1500';
+        document.getElementById('inStuFee').value = '0';
         document.getElementById('inStuParentPass').value = '';
+        ['stuPhotoUploadStatus', 'stuAadhaarFrontStatus', 'stuAadhaarBackStatus'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = '';
+        });
+        setStudentModalPreviews('', '', '', '👤');
         openModal('studentModal');
     }
 
     function openEditStudentModal(id) {
         const stu = db.students.find(s => s.id === id);
         if (!stu) return;
-        tempUploadedPhoto = '';
-        tempUploadedAadhaar = '';
+        tempUploadedPhoto = stu.photo || '';
+        tempUploadedAadhaar = stu.aadhaarFrontImg || stu.aadhaarImg || '';
+        tempUploadedAadhaarBack = stu.aadhaarBackImg || '';
+        activeStudentImgUploads = 0;
+        updateStudentUploadUiState();
         const cleanP = String(stu.phone).replace(/\D/g, '').slice(-10);
         document.getElementById('stuModalTitle').textContent = 'Edit Student & Parent No.';
         document.getElementById('editStuId').value = stu.id;
@@ -3832,27 +3964,102 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         document.getElementById('inStuAadhaar').value = stu.aadhaar || '';
         document.getElementById('inStuFee').value = stu.feeTotal || 1500;
         document.getElementById('inStuParentPass').value = (db.parentPasswords && db.parentPasswords[cleanP]) || '';
+        document.getElementById('stuPhotoUploadStatus').textContent = tempUploadedPhoto ? '✅ Saved' : '';
+        document.getElementById('stuAadhaarFrontStatus').textContent = tempUploadedAadhaar ? '✅ Saved' : '';
+        document.getElementById('stuAadhaarBackStatus').textContent = tempUploadedAadhaarBack ? '✅ Saved' : '';
+        setStudentModalPreviews(tempUploadedPhoto, tempUploadedAadhaar, tempUploadedAadhaarBack, stu.name);
         openModal('studentModal');
     }
 
+    function compressImageUnder100KB(img, kind) {
+        const MAX_BYTES = 98 * 1024; // Strictly under 100 KB (~98 KB) with maximum clarity
+        let maxDim = kind === 'photo' ? 680 : 1080;
+        let quality = 0.88;
+        let bestDataUrl = '';
+
+        for (let attempt = 0; attempt < 16; attempt++) {
+            const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+            const w = Math.max(120, Math.round(img.width * scale));
+            const h = Math.max(120, Math.round(img.height * scale));
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            const approxBytes = Math.ceil((dataUrl.length - 'data:image/jpeg;base64,'.length) * 0.75);
+            bestDataUrl = dataUrl;
+            if (approxBytes <= MAX_BYTES) {
+                return { dataUrl, kb: Math.max(1, Math.round(approxBytes / 1024)) };
+            }
+            if (quality > 0.56) {
+                quality = Number((quality - 0.08).toFixed(2));
+            } else {
+                maxDim = Math.round(maxDim * 0.84);
+                quality = 0.76;
+            }
+        }
+        const finalBytes = Math.ceil((bestDataUrl.length - 'data:image/jpeg;base64,'.length) * 0.75);
+        return { dataUrl: bestDataUrl, kb: Math.max(1, Math.round(finalBytes / 1024)) };
+    }
+
     function processUploadImg(event, kind) {
-        const file = event.target.files[0];
+        const file = event.target.files && event.target.files[0];
         if (!file) return;
+        activeStudentImgUploads++;
+        updateStudentUploadUiState();
+
+        const statusMap = {
+            photo: 'stuPhotoUploadStatus',
+            aadhaar: 'stuAadhaarFrontStatus',
+            aadhaarFront: 'stuAadhaarFrontStatus',
+            aadhaarBack: 'stuAadhaarBackStatus'
+        };
+        const stEl = document.getElementById(statusMap[kind]);
+        if (stEl) stEl.textContent = '⏳ Optimizing (<100KB)...';
+
         const reader = new FileReader();
+        reader.onerror = function () {
+            activeStudentImgUploads = Math.max(0, activeStudentImgUploads - 1);
+            updateStudentUploadUiState();
+            if (stEl) stEl.textContent = '❌ Retry';
+        };
         reader.onload = function (ev) {
             const img = new Image();
+            img.onerror = function () {
+                activeStudentImgUploads = Math.max(0, activeStudentImgUploads - 1);
+                updateStudentUploadUiState();
+                if (stEl) stEl.textContent = '❌ Invalid Image';
+            };
             img.onload = async function () {
-                const canvas = document.createElement('canvas');
-                const scale = Math.min(1, 480 / img.width);
-                canvas.width = img.width * scale;
-                canvas.height = img.height * scale;
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
-                showToast('Uploading to Google Drive...');
-                const driveUrl = await uploadImageToGoogleDrive(dataUrl, `${kind}_${Date.now()}.jpg`);
-                if (kind === 'photo') tempUploadedPhoto = driveUrl;
-                if (kind === 'aadhaar') tempUploadedAadhaar = driveUrl;
-                showToast('Image saved to Google Drive!');
+                try {
+                    const compressed = compressImageUnder100KB(img, kind);
+                    const dataUrl = compressed.dataUrl;
+                    const kbLabel = compressed.kb + ' KB';
+
+                    // Immediately store & preview local dataUrl so it never disappears
+                    if (kind === 'photo') tempUploadedPhoto = dataUrl;
+                    if (kind === 'aadhaar' || kind === 'aadhaarFront') tempUploadedAadhaar = dataUrl;
+                    if (kind === 'aadhaarBack') tempUploadedAadhaarBack = dataUrl;
+                    setStudentModalPreviews(tempUploadedPhoto, tempUploadedAadhaar, tempUploadedAadhaarBack, document.getElementById('inStuName').value || '👤');
+
+                    showToast(`Saving photo (${kbLabel}) to Google Drive...`);
+                    const driveUrl = await uploadImageToGoogleDrive(dataUrl, `${kind}_${Date.now()}.jpg`);
+                    if (kind === 'photo') tempUploadedPhoto = driveUrl || dataUrl;
+                    if (kind === 'aadhaar' || kind === 'aadhaarFront') tempUploadedAadhaar = driveUrl || dataUrl;
+                    if (kind === 'aadhaarBack') tempUploadedAadhaarBack = driveUrl || dataUrl;
+                    setStudentModalPreviews(tempUploadedPhoto, tempUploadedAadhaar, tempUploadedAadhaarBack, document.getElementById('inStuName').value || '👤');
+                    if (stEl) stEl.textContent = `✅ Saved (${kbLabel})`;
+                    showToast(`Photo (${kbLabel}) saved in crisp quality!`);
+                } finally {
+                    activeStudentImgUploads = Math.max(0, activeStudentImgUploads - 1);
+                    updateStudentUploadUiState();
+                }
             };
             img.src = ev.target.result;
         };
@@ -3861,6 +4068,10 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
     function saveStudent(e) {
         e.preventDefault();
+        if (activeStudentImgUploads > 0) {
+            showToast('Please wait 2 seconds, photo is still saving...');
+            return;
+        }
         const editId = document.getElementById('editStuId').value;
         const name = document.getElementById('inStuName').value.trim();
         const roll = document.getElementById('inStuRoll').value.trim();
@@ -3881,21 +4092,28 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 stu.name = name; stu.roll = roll; stu.parent = parent;
                 stu.phone = phone; stu.aadhaar = aadhaar; stu.feeTotal = feeTotal;
                 if (tempUploadedPhoto) stu.photo = tempUploadedPhoto;
-                if (tempUploadedAadhaar) stu.aadhaarImg = tempUploadedAadhaar;
+                if (tempUploadedAadhaar) {
+                    stu.aadhaarFrontImg = tempUploadedAadhaar;
+                    stu.aadhaarImg = tempUploadedAadhaar;
+                }
+                if (tempUploadedAadhaarBack) stu.aadhaarBackImg = tempUploadedAadhaarBack;
             }
-            showToast('Student updated & synced!');
+            showToast('Student profile, photo & Aadhaar updated!');
         } else {
             db.students.push({
                 id: 's_' + Date.now(),
                 classId: db.selectedClassId,
                 name, roll, parent, phone, aadhaar,
                 feeTotal, feePaid: 0,
+                feeMonths: feeTotal > 0 ? [{ month: '0000-00', label: 'Previous Due (Old Balance)', shortName: 'Previous Due', amount: feeTotal }] : [],
                 lastReceiptNo: 'BCC-' + Math.floor(1000 + Math.random() * 9000),
                 lastPayMode: 'Cash',
                 lastPayDate: getTodayISO(),
-                lastPayRemark: 'Monthly Tuition Fee',
+                lastPayRemark: feeTotal > 0 ? 'Previous Due Added' : 'Account Started (0)',
                 photo: tempUploadedPhoto,
-                aadhaarImg: tempUploadedAadhaar
+                aadhaarFrontImg: tempUploadedAadhaar,
+                aadhaarImg: tempUploadedAadhaar,
+                aadhaarBackImg: tempUploadedAadhaarBack
             });
             showToast(`Student ${name} added & synced!`);
         }
@@ -3913,59 +4131,61 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!stu) return;
         const cls = db.classes.find(c => c.id === stu.classId);
         const title = (db.branding && db.branding.title) || 'BABA COACHING CENTRE';
-        const modalH3 = document.querySelector('#idCardModal h3');
+        const modalH3 = document.getElementById('idCardModalHeading');
         const printBtn = document.querySelector('#idCardModal button[onclick="window.print()"]');
-        if (modalH3) modalH3.textContent = isParent ? '🪪 विद्यार्थी पहचान पत्र एवं आधार कार्ड' : '🪪 Student ID & Aadhaar Card';
-        if (printBtn) printBtn.textContent = isParent ? '🖨️ पहचान पत्र प्रिंट करें' : '🖨️ Print ID Card';
+        if (modalH3) modalH3.textContent = isParent ? '👤 विद्यार्थी प्रोफ़ाइल, पहचान पत्र एवं आधार कार्ड' : '👤 Student Full Profile & Aadhaar Card';
+        if (printBtn) printBtn.textContent = isParent ? '🖨️ पहचान पत्र प्रिंट करें' : '🖨️ Print ID & Profile';
 
-        const av = stu.photo
-            ? `<img src="${stu.photo}" style="width:72px;height:72px;border-radius:14px;object-fit:cover;border:2px solid #0e336b;">`
-            : `<div style="width:72px;height:72px;border-radius:14px;background:#dbeafe;color:#0e336b;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;">${esc(stu.name[0])}</div>`;
+        const circleProfilePhoto = renderAvatarCircle(stu.photo, (stu.name || 'S')[0], 78, '#eaa221');
+        const frontSrc = normalizeDriveImgUrl(stu.aadhaarFrontImg || stu.aadhaarImg || '');
+        const backSrc = normalizeDriveImgUrl(stu.aadhaarBackImg || '');
+        const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+        const dueBreakdown = getStudentMonthWiseDueSummary(stu);
 
-        const aadhaarSection = stu.aadhaarImg
-            ? `<div style="margin-top:10px;"><div style="font-size:11px;font-weight:800;margin-bottom:4px;">${isParent ? 'अपलोड किया गया आधार कार्ड:' : 'Uploaded Aadhaar Card (Google Drive):'}</div><img src="${stu.aadhaarImg}" style="width:100%;max-height:160px;object-fit:contain;border-radius:12px;border:1px solid #cbd5e1;"></div>`
-            : `<div style="margin-top:10px;padding:9px;background:#f8fafc;border-radius:10px;font-size:12px;">${isParent ? 'आधार नंबर:' : 'Aadhaar No:'} <strong>${esc(stu.aadhaar || (isParent ? 'दर्ज नहीं है' : 'Not Provided'))}</strong></div>`;
+        const aadhaarFrontHtml = frontSrc
+            ? `<div>
+                <div style="font-size:11px;font-weight:800;color:#0e336b;margin-bottom:4px;">🪪 Aadhaar Card (Front Side):</div>
+                <img src="${esc(frontSrc)}" referrerpolicy="no-referrer" style="width:100%;max-height:175px;object-fit:contain;border-radius:12px;border:1.5px solid #cbd5e1;background:#f8fafc;">
+               </div>`
+            : `<div style="padding:10px;background:#f8fafc;border-radius:10px;font-size:11px;color:#64748b;border:1px dashed #cbd5e1;">🪪 Aadhaar Card Front photo not uploaded</div>`;
 
-        document.getElementById('idCardBody').innerHTML = isParent ? `
+        const aadhaarBackHtml = backSrc
+            ? `<div>
+                <div style="font-size:11px;font-weight:800;color:#0e336b;margin-bottom:4px;">🪪 Aadhaar Card (Back Side):</div>
+                <img src="${esc(backSrc)}" referrerpolicy="no-referrer" style="width:100%;max-height:175px;object-fit:contain;border-radius:12px;border:1.5px solid #cbd5e1;background:#f8fafc;">
+               </div>`
+            : `<div style="padding:10px;background:#f8fafc;border-radius:10px;font-size:11px;color:#64748b;border:1px dashed #cbd5e1;">🪪 Aadhaar Card Back photo not uploaded</div>`;
+
+        document.getElementById('idCardBody').innerHTML = `
             <div style="border:2px solid #0e336b;border-radius:18px;overflow:hidden;background:#fff;">
                 <div style="background:linear-gradient(135deg,#0b1938,#0e336b);color:#fff;padding:10px 12px;display:flex;align-items:center;gap:10px;">
                     ${getLogoHtml(42)}
                     <div>
                         <div style="font-size:13px;font-weight:900;">${esc(title)}</div>
-                        <div style="font-size:9px;color:#fcd34d;font-weight:800;">आधिकारिक विद्यार्थी पहचान पत्र</div>
+                        <div style="font-size:9px;color:#fcd34d;font-weight:800;">${isParent ? 'आधिकारिक विद्यार्थी प्रोफ़ाइल एवं पहचान पत्र' : 'OFFICIAL STUDENT PROFILE & ID CARD'}</div>
                     </div>
                 </div>
-                <div style="padding:12px;display:flex;gap:12px;align-items:center;">
-                    ${av}
-                    <div style="font-size:12px;line-height:1.5;">
-                        <div style="font-size:15px;font-weight:900;color:#0f172a;">${esc(stu.name)}</div>
-                        <div><strong>रोल नं.:</strong> ${esc(stu.roll)} • <strong>कक्षा:</strong> ${esc(cls ? cls.name : '')}</div>
-                        <div><strong>अभिभावक:</strong> ${esc(stu.parent)}</div>
-                        <div><strong>मोबाइल:</strong> +91 ${esc(stu.phone)}</div>
-                    </div>
-                </div>
-            </div>
-            ${aadhaarSection}
-        ` : `
-            <div style="border:2px solid #0e336b;border-radius:18px;overflow:hidden;background:#fff;">
-                <div style="background:linear-gradient(135deg,#0b1938,#0e336b);color:#fff;padding:10px 12px;display:flex;align-items:center;gap:10px;">
-                    ${getLogoHtml(42)}
-                    <div>
-                        <div style="font-size:13px;font-weight:900;">${esc(title)}</div>
-                        <div style="font-size:9px;color:#fcd34d;font-weight:800;">OFFICIAL STUDENT IDENTITY CARD</div>
-                    </div>
-                </div>
-                <div style="padding:12px;display:flex;gap:12px;align-items:center;">
-                    ${av}
-                    <div style="font-size:12px;line-height:1.5;">
-                        <div style="font-size:15px;font-weight:900;color:#0f172a;">${esc(stu.name)}</div>
-                        <div><strong>Roll:</strong> ${esc(stu.roll)} • <strong>Class:</strong> ${esc(cls ? cls.name : '')}</div>
+                <div style="padding:14px 12px;display:flex;gap:12px;align-items:center;">
+                    ${circleProfilePhoto}
+                    <div style="font-size:12px;line-height:1.55;">
+                        <div style="font-size:16px;font-weight:900;color:#0f172a;">${esc(stu.name)}</div>
+                        <div><strong>Roll No:</strong> #${esc(stu.roll)} • <strong>Class:</strong> ${esc(cls ? cls.name : '')}</div>
                         <div><strong>Parent:</strong> ${esc(stu.parent)}</div>
                         <div><strong>Mobile:</strong> +91 ${esc(stu.phone)}</div>
+                        <div><strong>Aadhaar No:</strong> ${esc(stu.aadhaar || 'Not Provided')}</div>
                     </div>
                 </div>
+                <div style="padding:10px 12px;background:#f8fafc;border-top:1px solid #e2e8f0;font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                    <span><strong>Total Fee:</strong> ₹${stu.feeTotal || 0}</span>
+                    <span style="color:#059669;"><strong>Paid:</strong> ₹${stu.feePaid || 0}</span>
+                    <span style="color:${due > 0 ? '#c62828' : '#059669'};"><strong>Balance Due:</strong> ₹${due}</span>
+                </div>
+                ${due > 0 && dueBreakdown.text ? `<div style="padding:7px 12px;background:#fef2f2;color:#991b1b;font-size:11px;font-weight:800;border-top:1px dashed #fecaca;">📅 Month-wise Due Details: ${esc(dueBreakdown.text)}</div>` : ''}
             </div>
-            ${aadhaarSection}
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;">
+                ${aadhaarFrontHtml}
+                ${aadhaarBackHtml}
+            </div>
         `;
         openModal('idCardModal');
     }
@@ -3973,6 +4193,100 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     // =========================================================================
     // 7. FEES MANAGEMENT, PNG RECEIPT & FEE DUE WHATSAPP REMINDER
     // =========================================================================
+    function formatMonthLabel(ym) {
+        if (!ym) return '';
+        if (ym === '0000-00' || ym.startsWith('old_')) return 'Previous Due';
+        if (!/^\d{4}-\d{2}$/.test(ym)) return ym;
+        const [y, m] = ym.split('-');
+        const mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        return `${mNames[Number(m) - 1] || m} ${y}`;
+    }
+
+    function formatMonthOnlyName(ym) {
+        if (!ym) return '';
+        if (ym === '0000-00' || ym.startsWith('old_')) return 'Previous Due';
+        if (!/^\d{4}-\d{2}$/.test(ym)) return ym;
+        const [, m] = ym.split('-');
+        const mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        return mNames[Number(m) - 1] || ym;
+    }
+
+    function getDefaultFeeStartMonth() {
+        const now = new Date();
+        const y = now.getFullYear();
+        return `${y}-12`;
+    }
+
+    function getStudentMonthWiseDueSummary(stu) {
+        const total = Number(stu.feeTotal) || 0;
+        const paid = Number(stu.feePaid) || 0;
+        const overallDue = Math.max(0, total - paid);
+        let entries = Array.isArray(stu.feeMonths) ? stu.feeMonths.map((x, idx) => ({
+            idx,
+            month: x.month || '',
+            label: x.label || formatMonthLabel(x.month),
+            shortName: x.shortName || formatMonthOnlyName(x.month) || x.label || '',
+            amount: Number(x.amount) || 0
+        })) : [];
+
+        if (entries.length === 0 && total > 0) {
+            const fallbackYm = getDefaultFeeStartMonth();
+            entries = [{
+                idx: 0,
+                month: fallbackYm,
+                label: formatMonthLabel(fallbackYm),
+                shortName: formatMonthOnlyName(fallbackYm),
+                amount: total
+            }];
+        }
+
+        const sorted = entries.slice().sort((a, b) => String(a.month).localeCompare(String(b.month)));
+        let remainingPaid = paid;
+        const monthStatuses = sorted.map(item => {
+            const settled = Math.min(item.amount, Math.max(0, remainingPaid));
+            remainingPaid = Math.max(0, remainingPaid - settled);
+            const dueAmt = Math.max(0, item.amount - settled);
+            return {
+                idx: item.idx,
+                month: item.month,
+                label: item.label,
+                shortName: item.shortName || formatMonthOnlyName(item.month) || item.label,
+                total: item.amount,
+                paid: settled,
+                due: dueAmt
+            };
+        });
+
+        const cleanDueName = (raw) => String(raw || '').replace(/\s*Previous Due\b/gi, '').replace(/\s*\(Old Balance\)/gi, '').trim() || 'Due';
+        const dueMonths = monthStatuses.filter(m => m.due > 0).map(m => ({ ...m, cleanName: cleanDueName(m.shortName) }));
+        const text = dueMonths.length > 0
+            ? dueMonths.map(m => `${m.cleanName} ${m.due}`).join(', ')
+            : (overallDue > 0 ? `Due ${overallDue}` : '');
+        const lines = dueMonths.length > 0
+            ? dueMonths.map(m => `${m.cleanName} ${m.due}`)
+            : (overallDue > 0 ? [`Due ${overallDue}`] : []);
+
+        return { overallDue, monthStatuses, dueMonths, text, lines };
+    }
+
+    function resetAllStudentsFeesToZero() {
+        if (!isCurrentUserPrincipalOrAdmin()) {
+            showToast("Only Principal or Admin can reset all students' accounts to 0.");
+            return;
+        }
+        if (!confirm("Reset all students' previous fee accounts to 0 so fees can start fresh from December?")) return;
+        (db.students || []).forEach(stu => {
+            stu.feeTotal = 0;
+            stu.feePaid = 0;
+            stu.feeMonths = [];
+            stu.feeHistory = [];
+            stu.lastPayRemark = 'December Session Start (Account 0)';
+        });
+        saveDB();
+        renderFeeCards();
+        showToast("✅ All students' fee accounts reset to 0! Add fees starting from December.");
+    }
+
     function renderFeeCards() {
         const list = db.students.filter(s => s.classId === db.selectedClassId);
         let col = 0, dueSum = 0, dueStudentsCount = 0;
@@ -3987,21 +4301,37 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         document.getElementById('feeDueCountBadge').textContent = dueStudentsCount;
 
         document.getElementById('feeCardsMount').innerHTML = list.map(stu => {
-            const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+            const dueInfo = getStudentMonthWiseDueSummary(stu);
+            const due = dueInfo.overallDue;
+            const total = Number(stu.feeTotal) || 0;
+            const paid = Number(stu.feePaid) || 0;
+            const circleAv = renderAvatarCircle(stu.photo, (stu.name || 'S')[0], 40, '#0e336b');
+            const monthBadgesHtml = dueInfo.dueMonths.length > 0
+                ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:2px;">
+                    ${dueInfo.dueMonths.map(m => `<span class="badge badge-amber" style="font-size:10px;">📅 ${esc(m.shortName)}: ₹${m.due} Due</span>`).join('')}
+                   </div>`
+                : (total === 0 && paid === 0
+                    ? `<div style="font-size:10px;color:#64748b;font-weight:800;">🆕 Account: ₹0 (Add December fee or previous due)</div>`
+                    : `<div style="font-size:10px;color:#059669;font-weight:800;">✅ All fees paid</div>`);
+
             return `
             <div class="card-3d" style="display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <div>
-                        <div style="font-size:14px;font-weight:900;">#${esc(stu.roll)} ${esc(stu.name)}</div>
-                        <div style="font-size:11px;color:#64748b;font-weight:700;">Total Fee: ₹${stu.feeTotal} • Paid: <span style="color:#059669;">₹${stu.feePaid}</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                    <div style="display:flex;align-items:center;gap:9px;min-width:0;">
+                        ${circleAv}
+                        <div style="min-width:0;">
+                            <div style="font-size:14px;font-weight:900;">#${esc(stu.roll)} ${esc(stu.name)}</div>
+                            <div style="font-size:11px;color:#64748b;font-weight:700;">Total Fee: ₹${total} • Paid: <span style="color:#059669;">₹${paid}</span></div>
+                        </div>
                     </div>
-                    <div style="display:flex;align-items:center;gap:5px;">
-                        <span class="badge ${due === 0 ? 'badge-green' : 'badge-red'}">${due === 0 ? 'PAID' : 'Due ₹' + due}</span>
-                        ${isCurrentUserPrincipalOrAdmin() && (stu.feePaid || 0) > 0 ? `<button type="button" onclick="resetStudentFeeRecord('${stu.id}')" class="btn-3d btn-red" style="padding:4px 7px;font-size:10px;" title="Reset/Delete Paid Fee">🗑️</button>` : ''}
+                    <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                        <span class="badge ${due === 0 ? 'badge-green' : 'badge-red'}">${due === 0 ? (total === 0 ? '₹0' : 'PAID') : 'Due ₹' + due}</span>
+                        ${isCurrentUserPrincipalOrAdmin() && (total > 0 || paid > 0) ? `<button type="button" onclick="resetStudentFeeRecord('${stu.id}')" class="btn-3d btn-red" style="padding:4px 7px;font-size:10px;" title="Reset this student's fee account to 0">🗑️</button>` : ''}
                     </div>
                 </div>
-                <div style="display:grid;grid-template-columns: ${due > 0 ? '1fr 1fr 1fr 1fr' : '1fr 1fr 1.1fr'};gap:5px;">
-                    <button type="button" onclick="openAddMonthFeeModal('${stu.id}')" class="btn-3d btn-green" style="padding:8px 3px;font-size:10px;">+ Add Month</button>
+                ${monthBadgesHtml}
+                <div style="display:grid;grid-template-columns: ${due > 0 ? '1.15fr 1fr 1fr 0.9fr' : '1.15fr 1fr 1fr'};gap:5px;">
+                    <button type="button" onclick="openAddMonthFeeModal('${stu.id}')" class="btn-3d btn-green" style="padding:8px 3px;font-size:10px;">+ Fee / Due</button>
                     <button type="button" onclick="openCollectFeeModal('${stu.id}')" class="btn-3d btn-navy" style="padding:8px 3px;font-size:10px;">+ Collect</button>
                     <button type="button" onclick="openFeeReceipt('${stu.id}')" class="btn-3d btn-wa" style="padding:8px 3px;font-size:10px;">🧾 Receipt</button>
                     ${due > 0 ? `<button type="button" onclick="sendFeeDueWhatsApp('${stu.id}')" class="btn-3d btn-gold" style="padding:8px 3px;font-size:10px;">📲 Alert</button>` : ''}
@@ -4014,13 +4344,15 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!isCurrentUserPrincipalOrAdmin()) return;
         const stu = db.students.find(s => s.id === stuId);
         if (!stu) return;
-        if (!confirm(`क्या आप ${stu.name} का जमा फीस रिकॉर्ड (₹${stu.feePaid}) हटाना (रीसेट करना) चाहते हैं?`)) return;
+        if (!confirm(`क्या आप ${stu.name} का पूरा फीस रिकॉर्ड (Total ₹${stu.feeTotal || 0}, Paid ₹${stu.feePaid || 0}) हटाकर 0 करना चाहते हैं?`)) return;
+        stu.feeTotal = 0;
         stu.feePaid = 0;
+        stu.feeMonths = [];
         stu.feeHistory = [];
-        stu.lastPayRemark = 'Reset by Principal';
+        stu.lastPayRemark = 'Reset to 0';
         saveDB();
         renderFeeCards();
-        showToast(`${stu.name} का फीस रिकॉर्ड हटा दिया गया!`);
+        showToast(`${stu.name} 's fee account has been reset to 0!`);
     }
 
     function sendFeeDueWhatsApp(stuId) {
@@ -4028,9 +4360,13 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!stu) return;
         const cls = db.classes.find(c => c.id === stu.classId);
         const coaching = (db.branding && db.branding.title) || 'BABA COACHING CENTRE';
-        const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+        const dueInfo = getStudentMonthWiseDueSummary(stu);
+        const due = dueInfo.overallDue;
+        const monthDetailsLine = dueInfo.lines && dueInfo.lines.length > 0
+            ? `\nMonth-wise Due Amount:\n*${dueInfo.lines.join('\n')}*`
+            : '';
 
-        const msg = `नमस्ते ${stu.parent} जी,\n*${coaching}* की ओर से फीस बकाया सूचना (Fee Reminder):\n-------------------------\nछात्र का नाम: *${stu.name}*\nकक्षा / रोल नं: ${cls ? cls.name : ''} (#${stu.roll})\nकुल फीस: ₹${stu.feeTotal}\nजमा फीस: ₹${stu.feePaid}\nशेष बकाया (Pending Due): *₹${due}*\n-------------------------\nकृपया बकाया फीस शीघ्र जमा करने की कृपा करें।\nधन्यवाद - *${coaching}*`;
+        const msg = `नमस्ते ${stu.parent} जी,\n*${coaching}* की ओर से फीस बकाया सूचना (Fee Reminder):\n-------------------------\nछात्र का नाम: *${stu.name}*\nकक्षा / रोल नं: ${cls ? cls.name : ''} (#${stu.roll})\nकुल फीस: ₹${stu.feeTotal}\nजमा फीस: ₹${stu.feePaid}\nशेष बकाया (Pending Due): *₹${due}*${monthDetailsLine}\n-------------------------\nकृपया बकाया फीस शीघ्र जमा करने की कृपा करें।\nधन्यवाद - *${coaching}*`;
 
         window.open(getPersonalWhatsAppLink(stu.phone, msg), '_blank');
     }
@@ -4042,12 +4378,13 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             mount.innerHTML = `<div style="padding:14px;background:#dcfce7;color:#166534;border-radius:14px;font-weight:800;font-size:13px;">इस कक्षा के सभी विद्यार्थियों की फीस जमा है! 🎉</div>`;
         } else {
             mount.innerHTML = pendingList.map(stu => {
-                const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+                const dueInfo = getStudentMonthWiseDueSummary(stu);
                 return `
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#fefce8;border:1px solid #fde68a;border-radius:14px;">
                     <div>
                         <div style="font-size:13px;font-weight:900;">${esc(stu.name)} (#${esc(stu.roll)})</div>
-                        <div style="font-size:11px;color:#92400e;font-weight:800;">Due: ₹${due} • ${esc(stu.parent)} (${esc(stu.phone)})</div>
+                        <div style="font-size:11px;color:#92400e;font-weight:800;">Due: ₹${dueInfo.overallDue} (${esc(dueInfo.text)})</div>
+                        <div style="font-size:10px;color:#64748b;">${esc(stu.parent)} • ${esc(stu.phone)}</div>
                     </div>
                     <button type="button" onclick="sendFeeDueWhatsApp('${stu.id}')" class="btn-3d btn-wa" style="padding:8px 12px;font-size:11px;">📲 Send Alert</button>
                 </div>`;
@@ -4067,12 +4404,14 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     function openCollectFeeModal(stuId) {
         const stu = db.students.find(s => s.id === stuId);
         if (!stu) return;
-        const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+        const dueInfo = getStudentMonthWiseDueSummary(stu);
+        const due = dueInfo.overallDue;
         document.getElementById('feeStuId').value = stu.id;
-        document.getElementById('feeStuBanner').textContent = `${stu.name} (#${stu.roll}) • Balance Due: ₹${due}`;
+        document.getElementById('feeStuBanner').textContent = `${stu.name} (#${stu.roll}) • Balance Due: ₹${due}${dueInfo.text ? ' (' + dueInfo.text + ')' : ''}`;
         document.getElementById('inFeeTotalEdit').value = stu.feeTotal || 0;
-        document.getElementById('inFeePaidAmt').value = due > 0 ? due : (stu.feeTotal || 500);
-        document.getElementById('inFeeMonthPick').value = getTodayISO().slice(0, 7);
+        document.getElementById('inFeePaidAmt').value = due > 0 ? due : 500;
+        const firstDueMonth = dueInfo.dueMonths.find(m => /^\d{4}-\d{2}$/.test(m.month) && m.month !== '0000-00');
+        document.getElementById('inFeeMonthPick').value = (firstDueMonth && firstDueMonth.month) || getDefaultFeeStartMonth();
         onFeeMonthPickChange();
         openModal('collectFeeModal');
     }
@@ -4113,35 +4452,134 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         }
     }
 
+    function onOldDueMonthSelectChange() {
+        const mName = (document.getElementById('inAddFeeOldMonthSelect').value || 'November').trim();
+        document.getElementById('inAddFeeOldLabel').value = mName;
+    }
+
+    function onAddFeeKindChange() {
+        const kind = document.getElementById('inAddFeeKind').value;
+        const monthWrap = document.getElementById('addFeeMonthFieldWrap');
+        const oldRow = document.getElementById('addFeeOldMonthRow');
+        if (monthWrap) monthWrap.classList.toggle('hidden', kind !== 'month');
+        if (oldRow) oldRow.classList.toggle('hidden', kind !== 'old_due');
+    }
+
+    function renderStudentFeeEntriesManageList(stu) {
+        const mount = document.getElementById('stuFeeEntriesManageMount');
+        if (!mount || !stu) return;
+        const entries = Array.isArray(stu.feeMonths) ? stu.feeMonths : [];
+        if (entries.length === 0) {
+            mount.innerHTML = `<div style="font-size:11px;color:#64748b;padding:8px;background:#f8fafc;border-radius:10px;text-align:center;">No monthly fee or previous due added yet (Account: ₹0).</div>`;
+            return;
+        }
+        mount.innerHTML = entries.map((item, idx) => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;font-size:12px;">
+                <div>
+                    <strong style="color:#0f172a;">${esc(item.shortName || item.label || item.month)}</strong>
+                    <span style="color:#059669;font-weight:800;margin-left:6px;">₹${item.amount}</span>
+                </div>
+                <button type="button" onclick="removeStudentFeeEntry('${stu.id}', ${idx})" class="btn-3d btn-red" style="padding:4px 9px;font-size:10px;">
+                    🗑️ Remove
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function removeStudentFeeEntry(stuId, entryIdx) {
+        const stu = db.students.find(s => s.id === stuId);
+        if (!stu || !Array.isArray(stu.feeMonths)) return;
+        const target = stu.feeMonths[entryIdx];
+        if (!target) return;
+        const label = target.shortName || target.label || 'Entry';
+        if (!confirm(`Are you sure you want to remove "${label} (₹${target.amount})"?`)) return;
+
+        const removedAmt = Number(target.amount) || 0;
+        stu.feeMonths.splice(entryIdx, 1);
+        stu.feeTotal = Math.max(0, (Number(stu.feeTotal) || 0) - removedAmt);
+        if (stu.feePaid > stu.feeTotal && stu.feeTotal === 0) {
+            stu.feePaid = 0;
+        }
+        saveDB();
+        renderFeeCards();
+        const dueInfo = getStudentMonthWiseDueSummary(stu);
+        document.getElementById('addMonthStuBanner').textContent = `${stu.name} (#${stu.roll}) • Total Fee: ₹${stu.feeTotal || 0} | Due: ₹${dueInfo.overallDue}${dueInfo.text ? ' (' + dueInfo.text + ')' : ''}`;
+        renderStudentFeeEntriesManageList(stu);
+        showToast(`Removed "${label}" (₹${removedAmt})!`);
+    }
+
     function openAddMonthFeeModal(stuId) {
         const stu = db.students.find(s => s.id === stuId);
         if (!stu) return;
-        const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+        if (!Array.isArray(stu.feeMonths)) {
+            const existingTotal = Number(stu.feeTotal) || 0;
+            const prevYm = getDefaultFeeStartMonth();
+            stu.feeMonths = existingTotal > 0 ? [{ month: prevYm, label: formatMonthLabel(prevYm), shortName: formatMonthOnlyName(prevYm), amount: existingTotal }] : [];
+        }
+        const dueInfo = getStudentMonthWiseDueSummary(stu);
         document.getElementById('addMonthStuId').value = stu.id;
-        document.getElementById('addMonthStuBanner').textContent = `${stu.name} (#${stu.roll}) • Total Fee: ₹${stu.feeTotal || 0} | Due: ₹${due}`;
-        document.getElementById('inAddFeeMonth').value = getTodayISO().slice(0, 7);
-        document.getElementById('inAddFeeMonthAmt').value = stu.feeTotal > 0 ? stu.feeTotal : 1500;
+        document.getElementById('addMonthStuBanner').textContent = `${stu.name} (#${stu.roll}) • Total Fee: ₹${stu.feeTotal || 0} | Due: ₹${dueInfo.overallDue}${dueInfo.text ? ' (' + dueInfo.text + ')' : ''}`;
+        document.getElementById('inAddFeeKind').value = 'month';
+        onAddFeeKindChange();
+        document.getElementById('inAddFeeMonth').value = getDefaultFeeStartMonth();
+        document.getElementById('inAddFeeOldMonthSelect').value = 'November';
+        document.getElementById('inAddFeeOldLabel').value = 'November';
+        const defaultMonthly = (stu.feeMonths.length > 0)
+            ? stu.feeMonths[stu.feeMonths.length - 1].amount
+            : 500;
+        document.getElementById('inAddFeeMonthAmt').value = defaultMonthly;
+        renderStudentFeeEntriesManageList(stu);
         openModal('addMonthFeeModal');
     }
 
     function submitAddMonthFee(e) {
         e.preventDefault();
         const stuId = document.getElementById('addMonthStuId').value;
-        const ym = (document.getElementById('inAddFeeMonth').value || '').trim();
+        const kind = document.getElementById('inAddFeeKind').value || 'month';
         const addAmt = Number(document.getElementById('inAddFeeMonthAmt').value) || 0;
         const stu = db.students.find(s => s.id === stuId);
-        if (!stu || addAmt <= 0 || !ym) return;
+        if (!stu || addAmt <= 0) return;
 
+        if (!Array.isArray(stu.feeMonths)) stu.feeMonths = [];
+
+        if (kind === 'old_due') {
+            const selMonth = (document.getElementById('inAddFeeOldMonthSelect').value || 'November').trim();
+            const customLabel = ((document.getElementById('inAddFeeOldLabel').value || '').trim() || selMonth).replace(/\s*Previous Due\b/gi, '').trim();
+            const oldKey = '0000-00_' + Date.now();
+            stu.feeMonths.unshift({
+                month: oldKey,
+                label: customLabel,
+                shortName: customLabel,
+                amount: addAmt
+            });
+            stu.feeTotal = (Number(stu.feeTotal) || 0) + addAmt;
+            stu.lastPayRemark = `${customLabel} Due Added`;
+            saveDB();
+            renderFeeCards();
+            closeModal('addMonthFeeModal');
+            showToast(`${customLabel} (₹${addAmt}) added!`);
+            return;
+        }
+
+        const ym = (document.getElementById('inAddFeeMonth').value || '').trim() || getDefaultFeeStartMonth();
         const [y, m] = ym.split('-');
         const mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
         const monthLabel = `${mNames[Number(m) - 1] || m} ${y}`;
+        const shortNameOnly = mNames[Number(m) - 1] || ym;
+
+        const existingIdx = stu.feeMonths.findIndex(x => x.month === ym);
+        if (existingIdx >= 0) {
+            stu.feeMonths[existingIdx].amount = (Number(stu.feeMonths[existingIdx].amount) || 0) + addAmt;
+        } else {
+            stu.feeMonths.push({ month: ym, label: monthLabel, shortName: shortNameOnly, amount: addAmt });
+        }
 
         stu.feeTotal = (Number(stu.feeTotal) || 0) + addAmt;
         stu.lastPayRemark = `${monthLabel} Monthly Fee Added`;
         saveDB();
         renderFeeCards();
         closeModal('addMonthFeeModal');
-        showToast(`${monthLabel} की ₹${addAmt} फीस जुड़ गई!`);
+        showToast(`${monthLabel} fee (₹${addAmt}) added!`);
     }
 
     function openFeeReceipt(stuId) {
@@ -4151,7 +4589,8 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!stu) return;
         const cls = db.classes.find(c => c.id === stu.classId);
         const coaching = (db.branding && db.branding.title) || 'BABA COACHING CENTRE';
-        const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+        const dueInfo = getStudentMonthWiseDueSummary(stu);
+        const due = dueInfo.overallDue;
         const rNo = stu.lastReceiptNo || 'BCC-1024';
         const pDate = stu.lastPayDate || getTodayISO();
         const pMode = stu.lastPayMode || 'Cash';
@@ -4163,6 +4602,13 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (recH3) recH3.textContent = isParent ? '🧾 आधिकारिक फीस रसीद' : '🧾 Official Fee Receipt';
         if (waBtn) waBtn.textContent = isParent ? '🖼️ व्हाट्सऐप पर भेजें' : '🖼️ Send PNG Receipt on WhatsApp';
         if (dlBtn) dlBtn.textContent = isParent ? '⬇️ रसीद डाउनलोड करें' : '⬇️ Download PNG';
+
+        const monthDuePreviewRow = due > 0 && dueInfo.lines && dueInfo.lines.length > 0
+            ? `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;color:#991b1b;font-size:12px;background:#fef2f2;padding:7px 9px;border-radius:10px;border:1px dashed #fecaca;">
+                <span style="font-weight:800;">Month-wise Due Amount:</span>
+                <strong style="text-align:right;line-height:1.45;">${dueInfo.lines.map(ln => esc(ln)).join('<br>')}</strong>
+               </div>`
+            : '';
 
         document.getElementById('receiptPreviewMount').innerHTML = isParent ? `
             <div style="border:2.5px solid #0b295c;border-radius:20px;overflow:hidden;background:#fff;font-family:Georgia,'Times New Roman',serif;">
@@ -4189,6 +4635,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                     <div style="display:flex;justify-content:space-between;"><span style="color:#1e293b;">कुल फीस:</span><strong style="color:#0f172a;">₹${stu.feeTotal}</strong></div>
                     <div style="display:flex;justify-content:space-between;color:#059669;font-size:14px;"><span>जमा फीस:</span><strong>₹${stu.feePaid}</strong></div>
                     <div style="display:flex;justify-content:space-between;color:${due > 0 ? '#c62828' : '#059669'};font-size:14px;"><span>बाकी फीस:</span><strong>${due > 0 ? `₹${due} (बाकी)` : '₹0 (पूर्ण जमा)'}</strong></div>
+                    ${monthDuePreviewRow}
                 </div>
             </div>
         ` : `
@@ -4216,10 +4663,12 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                     <div style="display:flex;justify-content:space-between;"><span style="color:#1e293b;">Total Course Fee:</span><strong style="color:#0f172a;">₹${stu.feeTotal}</strong></div>
                     <div style="display:flex;justify-content:space-between;color:#059669;font-size:14px;"><span>Total Paid Fee:</span><strong>₹${stu.feePaid}</strong></div>
                     <div style="display:flex;justify-content:space-between;color:${due > 0 ? '#c62828' : '#059669'};font-size:14px;"><span>Balance Due:</span><strong>${due > 0 ? `₹${due} (DUE)` : '₹0 (PAID)'}</strong></div>
+                    ${monthDuePreviewRow}
                 </div>
             </div>
         `;
 
+        const monthDueCaptionLine = due > 0 && dueInfo.lines && dueInfo.lines.length > 0 ? `\n📅 Month-wise Due Amount:\n*${dueInfo.lines.join('\n')}*` : '';
         const waCaption = `नमस्ते ${stu.parent || 'अभिभावक'} जी,
 
 *${coaching}* की ओर से फीस की पूरी जानकारी:
@@ -4233,7 +4682,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
 कुल फीस: *₹${stu.feeTotal || 0}*
 जमा फीस: *₹${stu.feePaid || 0}*
-बाकी फीस: *₹${due}*
+बाकी फीस: *₹${due}*${monthDueCaptionLine}
 
 रसीद देखने के लिए नीचे दिए गए लिंक पर क्लिक करें।
 
@@ -4298,7 +4747,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const list = db.exams.filter(ex => ex.classId === db.selectedClassId);
         const mount = document.getElementById('examCardsMount');
         if (list.length === 0) {
-            mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;padding:24px;">इस कक्षा की कोई परीक्षा नहीं है। ऊपर <strong>+ New Exam</strong> दबाएं।</div>`;
+            mount.innerHTML = `<div class="card-3d" style="text-align:center;color:#64748b;padding:24px;">No exams in this class. Tap <strong>+ New Exam</strong> above.</div>`;
             return;
         }
 
@@ -4360,7 +4809,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const coaching = (db.branding && db.branding.title) || 'BABA COACHING CENTRE';
 
         document.getElementById('examDateNotifyMount').innerHTML = students.map(stu => {
-            const msg = `नमस्ते ${stu.parent} जी,\n*${coaching}* की ओर से परीक्षा सूचना:\nछात्र: *${stu.name}* (${cls ? cls.name : ''})\nपरीक्षा: *${ex.title}*\nविषय: *${ex.subject}*\nकुल अंक (Total Marks): *${ex.totalMarks}*\nदिनांक: *${ex.date}*\nसमय: ${ex.time}\nसिलेबस: ${ex.syllabus || 'Class Notes'}\nकृपया बच्चे को समय पर भेजें।`;
+            const msg = `नमस्ते ${stu.parent} जी,\n*${coaching}* की ओर से परीक्षा सूचना:\nछात्र: *${stu.name}* (${cls ? cls.name : ''})\nपरीक्षा: *${ex.title}*\nविषय: *${ex.subject}*\nTotal Marks: *${ex.totalMarks}*\nदिनांक: *${ex.date}*\nसमय: ${ex.time}\nसिलेबस: ${ex.syllabus || 'Class Notes'}\nकृपया बच्चे को समय पर भेजें।`;
             const url = getPersonalWhatsAppLink(stu.phone, msg);
             return `
             <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;">
@@ -4404,7 +4853,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         if (!ex.marks) ex.marks = {};
         const students = db.students.filter(s => s.classId === ex.classId);
         document.getElementById('resultModalHeading').textContent = `📊 ${ex.title} (${ex.subject})`;
-        document.getElementById('resultTotalMarksBanner').textContent = `कुल अंक (Total Marks): ${ex.totalMarks} | उत्तीर्ण अंक (Pass Marks): ${ex.passMarks || 35}`;
+        document.getElementById('resultTotalMarksBanner').textContent = `Total Marks: ${ex.totalMarks} | Pass Marks: ${ex.passMarks || 35}`;
 
         document.getElementById('resultStudentsMount').innerHTML = students.map(stu => {
             const val = ex.marks[stu.id] !== undefined ? ex.marks[stu.id] : '';
@@ -4466,30 +4915,25 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     }
 
     function drawEmblemOnCanvas(ctx, cx, cy, radius) {
-        return new Promise((resolve) => {
-            const customSrc = (db.branding && db.branding.customLogo) || './icon-512.png';
-            if (customSrc) {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = () => {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-                    ctx.closePath();
-                    ctx.clip();
-                    ctx.drawImage(img, cx - radius, cy - radius, radius * 2, radius * 2);
-                    ctx.restore();
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-                    ctx.lineWidth = 5;
-                    ctx.strokeStyle = '#eaa221';
-                    ctx.stroke();
-                    ctx.restore();
-                    resolve();
-                };
-                img.onerror = () => { drawExactSvgEmblemOnCanvas(ctx, cx, cy, radius).then(resolve); };
-                img.src = normalizeDriveImgUrl(customSrc);
+        return new Promise(async (resolve) => {
+            const customSrc = (db.branding && db.branding.customLogo) ? db.branding.customLogo : './icon-512.png';
+            const img = await loadSafeImageForCanvas(customSrc);
+            if (img) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(img, cx - radius, cy - radius, radius * 2, radius * 2);
+                ctx.restore();
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = '#eaa221';
+                ctx.stroke();
+                ctx.restore();
+                resolve();
             } else {
                 drawExactSvgEmblemOnCanvas(ctx, cx, cy, radius).then(resolve);
             }
@@ -4545,13 +4989,48 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         ctx.restore();
     }
 
-    // Draw the saved student photo on official fee/result PNG cards.
-    function drawStudentPhotoOnCanvas(ctx, stu, cx, cy, radius) {
+    // Load an image safely as a same-origin Data URL so canvas.toBlob() NEVER fails due to Drive CORS
+    function loadSafeImageForCanvas(rawUrl) {
         return new Promise((resolve) => {
-            if (!stu || !stu.photo) { resolve(); return; }
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = () => {
+            if (!rawUrl) { resolve(null); return; }
+            if (rawUrl.startsWith('data:image/')) {
+                const im = new Image();
+                im.onload = () => resolve(im);
+                im.onerror = () => resolve(null);
+                im.src = rawUrl;
+                return;
+            }
+            const normalized = normalizeDriveImgUrl(rawUrl) || rawUrl;
+            // Try fetch -> blob -> FileReader first to bypass canvas CORS taint
+            fetch(normalized, { mode: 'cors' })
+                .then(r => r.ok ? r.blob() : Promise.reject('fetch_err'))
+                .then(blob => {
+                    const fr = new FileReader();
+                    fr.onload = () => {
+                        const im = new Image();
+                        im.onload = () => resolve(im);
+                        im.onerror = () => resolve(null);
+                        im.src = fr.result;
+                    };
+                    fr.onerror = () => resolve(null);
+                    fr.readAsDataURL(blob);
+                })
+                .catch(() => {
+                    const im = new Image();
+                    im.crossOrigin = 'anonymous';
+                    im.onload = () => resolve(im);
+                    im.onerror = () => resolve(null);
+                    im.src = normalized;
+                });
+        });
+    }
+
+    // Draw the saved student photo (or clean circular initial badge) on official fee/result PNG cards
+    function drawStudentPhotoOnCanvas(ctx, stu, cx, cy, radius) {
+        return new Promise(async (resolve) => {
+            if (!stu) { resolve(); return; }
+            const img = await loadSafeImageForCanvas(stu.photo);
+            if (img) {
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(cx, cy, radius, 0, Math.PI * 2);
@@ -4561,17 +5040,32 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 const w = img.width * scale, h = img.height * scale;
                 ctx.drawImage(img, cx - w / 2, cy - h / 2, w, h);
                 ctx.restore();
+
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-                ctx.lineWidth = 6;
+                ctx.lineWidth = 7;
                 ctx.strokeStyle = '#eaa221';
                 ctx.stroke();
                 ctx.restore();
-                resolve();
-            };
-            img.onerror = () => resolve();
-            img.src = normalizeDriveImgUrl(stu.photo) || stu.photo;
+            } else {
+                // Draw clean circular initial badge so the photo slot is always visible even before photo upload
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#dbeafe';
+                ctx.fill();
+                ctx.lineWidth = 7;
+                ctx.strokeStyle = '#eaa221';
+                ctx.stroke();
+                ctx.fillStyle = '#0e336b';
+                ctx.font = `900 ${Math.round(radius * 0.85)}px Georgia, serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(String((stu.name || 'S')[0]).toUpperCase(), cx, cy + 4);
+                ctx.restore();
+            }
+            resolve();
         });
     }
 
@@ -4581,32 +5075,30 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             if (!stu) { resolve(null); return; }
             const cls = db.classes.find(c => c.id === stu.classId);
             const coaching = (db.branding && db.branding.title) || 'BABA COACHING CENTRE';
-            const due = Math.max(0, (stu.feeTotal || 0) - (stu.feePaid || 0));
+            const dueInfo = getStudentMonthWiseDueSummary(stu);
+            const due = dueInfo.overallDue;
             const rNo = stu.lastReceiptNo || 'BCC-1024';
             const pDate = stu.lastPayDate || getTodayISO();
             const pMode = stu.lastPayMode || 'Cash';
             const pRemark = stu.lastPayRemark || 'Monthly Tuition Fee';
             const rollFormatted = String(stu.roll || '').padStart(2, '0');
 
-            // Ultra-HD 2x Retina Canvas (1520 x 1220) -> Zero quality loss!
-            const W = 1520, H = 1220;
+            const extraLinesCount = (due > 0 && dueInfo.lines) ? dueInfo.lines.length : 0;
+            const W = 1520, H = 1240 + (extraLinesCount > 0 ? (extraLinesCount * 46 + 40) : 0);
             const canvas = document.createElement('canvas');
             canvas.width = W; canvas.height = H;
             const ctx = canvas.getContext('2d');
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
 
-            // Pure crisp white background
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, W, H);
 
-            // Outer Rounded Navy Frame matching reference image
             const pad = 28, rad = 52;
             ctx.fillStyle = '#ffffff';
             drawRoundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, rad);
             ctx.fill();
 
-            // Top Deep Navy Header Banner
             ctx.save();
             drawRoundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, rad);
             ctx.clip();
@@ -4614,7 +5106,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             ctx.fillRect(pad, pad, W - pad * 2, 240);
             ctx.restore();
 
-            // Crisp Outer Border Stroke
             drawRoundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, rad);
             ctx.lineWidth = 7;
             ctx.strokeStyle = '#0b295c';
@@ -4622,9 +5113,8 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
             // Left Circular Emblem Logo
             await drawEmblemOnCanvas(ctx, 178, 148, 86);
-            await drawStudentPhotoOnCanvas(ctx, stu, W - 150, H - 100, 60);
 
-            // Title & Subtitle in Classic Bold Serif
+            // Title & Subtitle
             ctx.fillStyle = '#ffffff';
             ctx.font = '900 46px Georgia, "Times New Roman", serif';
             ctx.textAlign = 'left';
@@ -4634,7 +5124,7 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             ctx.font = '800 28px Georgia, "Times New Roman", serif';
             ctx.fillText('OFFICIAL DIGITAL FEE RECEIPT / आधिकारिक फीस रसीद', 305, 184);
 
-            // Top-Right Receipt No & Date
+            // Receipt No & Date
             ctx.textAlign = 'right';
             ctx.fillStyle = '#fbbf24';
             ctx.font = '900 34px Georgia, "Times New Roman", serif';
@@ -4644,7 +5134,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             ctx.font = '700 30px Georgia, "Times New Roman", serif';
             ctx.fillText(pDate, W - 76, 184);
 
-            // Student & Payment Details Rows (Reference Image Layout)
             const detailRows = [
                 ['विद्यार्थी का नाम / Student Name:', stu.name],
                 ['कक्षा व रोल नंबर / Class & Roll No:', `${cls ? cls.name : ''} (#${rollFormatted})`],
@@ -4667,7 +5156,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 y += 88;
             });
 
-            // Dotted Horizontal Separator Line
             ctx.save();
             ctx.setLineDash([6, 8]);
             ctx.strokeStyle = '#cbd5e1';
@@ -4680,7 +5168,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
 
             y += 42;
 
-            // Fee Totals Section (Exact Reference Colors & Typography)
             ctx.textAlign = 'left';
             ctx.fillStyle = '#1e293b';
             ctx.font = '500 38px Georgia, "Times New Roman", serif';
@@ -4708,6 +5195,20 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             ctx.textAlign = 'right';
             ctx.font = '700 42px Georgia, "Times New Roman", serif';
             ctx.fillText(due > 0 ? `₹${due} (DUE)` : '₹0 (PAID)', W - 96, y);
+
+            if (due > 0 && dueInfo.lines && dueInfo.lines.length > 0) {
+                y += 80;
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#991b1b';
+                ctx.font = '700 34px Georgia, "Times New Roman", serif';
+                ctx.fillText('Month-wise Due Amount:', 96, y);
+
+                ctx.textAlign = 'right';
+                ctx.font = '700 34px Georgia, "Times New Roman", serif';
+                dueInfo.lines.forEach((lineStr, idx) => {
+                    ctx.fillText(lineStr, W - 96, y + (idx * 46));
+                });
+            }
 
             canvas.toBlob((blob) => resolve({
                 blob,
@@ -4757,7 +5258,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
             ctx.stroke();
 
             await drawEmblemOnCanvas(ctx, 178, 148, 86);
-            await drawStudentPhotoOnCanvas(ctx, stu, W - 150, H - 100, 60);
 
             ctx.fillStyle = '#ffffff';
             ctx.font = '900 46px Georgia, "Times New Roman", serif';
@@ -4799,7 +5299,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
                 y += 88;
             });
 
-            // Dotted Separator Line
             ctx.save();
             ctx.setLineDash([6, 8]);
             ctx.strokeStyle = '#cbd5e1';
@@ -4883,8 +5382,8 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
     async function sharePngToParentWhatsApp(blob, filename, phone, captionText, parentNameLabel = '') {
         if (!blob) return;
 
-        // Save the PNG locally, upload a public-view copy to Drive, then open
-        // the parent's saved WhatsApp number with that public link in the text.
+        // Upload a public-view copy to Google Drive WITHOUT downloading the PNG file onto the phone/device,
+        // then open the parent's saved WhatsApp number with the complete details + public link.
         const cleanDigits = String(phone || '').replace(/\D/g, '').slice(-10);
         if (cleanDigits.length !== 10) {
             showToast('अभिभावक का 10-अंकों का व्हाट्सऐप नंबर विद्यार्थी रिकॉर्ड में सही से सेव करें।');
@@ -4892,37 +5391,22 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         }
 
         const shareName = filename.toLowerCase().endsWith('.png') ? filename : `${filename}.png`;
-        const objectUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = objectUrl;
-        a.download = shareName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
-
         showToast('रसीद/परिणाम का ऑनलाइन लिंक बन रहा है...');
         const publicImageLink = await uploadGeneratedPngForParentLink(blob, shareName);
         if (!publicImageLink) {
             showToast('इमेज का ऑनलाइन लिंक नहीं बन पाया। WhatsApp संदेश नहीं खोला गया। Google Sheets / Apps Script कनेक्शन जाँचें।');
             return;
         }
-        // Send the complete Hindi details plus ONLY the public image link.
-        // The image itself is not attached to WhatsApp.
-        const finalCaption = `${captionText || ''}\n\n🔗 इमेज देखने का लिंक:\n${publicImageLink}`;
 
+        const finalCaption = `${captionText || ''}\n\n🔗 इमेज देखने का लिंक:\n${publicImageLink}`;
         const directChatUrl = `https://wa.me/91${cleanDigits}?text=${encodeURIComponent(finalCaption)}`;
         const chatWindow = window.open(directChatUrl, '_blank');
         if (!chatWindow) window.location.href = directChatUrl;
 
-        if (publicImageLink) {
-            showToast(`${parentNameLabel || 'अभिभावक'} का व्हाट्सऐप खुल रहा है। पूरा संदेश और इमेज का लिंक तैयार है; Send दबाएं।`);
-        } else {
-            showToast('व्हाट्सऐप चैट खुल रही है। ऑनलाइन लिंक नहीं बन सका; डाउनलोड की गई PNG संलग्न करें। Google Sheets सिंक कनेक्शन जांचें।');
-        }
+        showToast(`${parentNameLabel || 'अभिभावक'} का व्हाट्सऐप खुल रहा है। पूरा संदेश और लिंक तैयार है; Send दबाएं।`);
     }
 
-        async function sendExamResultPngOnWhatsApp(examId, stuId) {
+    async function sendExamResultPngOnWhatsApp(examId, stuId) {
         const ex = db.exams.find(x => x.id === examId);
         const stu = db.students.find(s => s.id === stuId);
         if (!ex || !stu) return;
@@ -4938,7 +5422,6 @@ function syncToTemplateTabs(ss, db, updatedBy, nowIso) {
         const caption = `नमस्ते ${stu.parent || 'अभिभावक'} जी,\n\n*${coaching}* की ओर से *आधिकारिक परीक्षा परिणाम* की पूरी जानकारी:\n\n👨‍🎓 विद्यार्थी का नाम: *${stu.name}*\n🏫 कक्षा एवं रोल नंबर: *${cls ? cls.name : '-'} (#${String(stu.roll || '').padStart(2, '0')})*\n👨‍👩‍👦 अभिभावक का नाम: *${stu.parent || '-'}*\n📝 परीक्षा: *${ex.title}*\n📚 विषय: *${ex.subject}*\n📅 दिनांक: *${resultDate}*\n\nकुल अंक: *${ex.totalMarks}*\nप्राप्तांक: *${marksText}*\nअंतिम परिणाम: *${gradeText}*\n\nपूरा रिजल्ट देखने के लिए नीचे दिए गए इमेज लिंक पर क्लिक करें।\n\nधन्यवाद!\n*${coaching}*`;
         await sharePngToParentWhatsApp(resData.blob, resData.filename, stu.phone, caption, stu.parent);
     }
-
 
     // =========================================================================
     // 9. SETTINGS TAB: TEACHERS, REPORTS, BACKUP & LOGO SETTINGS
